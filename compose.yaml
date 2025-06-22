@@ -1,0 +1,99 @@
+volumes:
+  db-store:
+
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./infra/docker/php/Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+      target: ${APP_BUILD_TARGET:-development}
+    ports:
+      # Adicionar porta do Vite
+      - target: 5173
+        published: ${VITE_PUBLISHED_PORT:-5173}
+        protocol: tcp
+        mode: host
+    volumes:
+      - type: bind
+        source: ./src
+        target: /workspace
+    environment:
+      # Please remove this environment variable, after created the Laravel project. Please write in .env
+      - DB_CONNECTION=${DB_CONNECTION:-mysql}
+      - DB_HOST=${DB_HOST:-db}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_DATABASE=${DB_DATABASE:-laravel}
+      - DB_USERNAME=${DB_USERNAME:-phper}
+      - DB_PASSWORD=${DB_PASSWORD:-secret}
+    networks:
+      - app-laravel
+
+  web:
+    build:
+      context: .
+      dockerfile: ./infra/docker/nginx/Dockerfile
+    ports:
+      - target: 80
+        published: ${WEB_PUBLISHED_PORT:-80}
+        protocol: tcp
+        mode: host
+    volumes:
+      - type: bind
+        source: ./src
+        target: /workspace
+    networks:
+      - app-laravel
+
+  db:
+    build:
+      context: .
+      dockerfile: ./infra/docker/mysql/Dockerfile
+    ports:
+      - target: 3306
+        published: ${DB_PUBLISHED_PORT:-3306}
+        protocol: tcp
+        mode: host
+    volumes:
+      - ./data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE:-laravel}
+      - MYSQL_USER=${DB_USERNAME:-phper}
+      - MYSQL_PASSWORD=${DB_PASSWORD:-secret}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD:-secret}
+    networks:
+      - app-laravel
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - target: 8025
+        published: ${MAILPIT_PUBLISHED_PORT:-8025}
+        protocol: tcp
+        mode: host
+    networks:
+      - app-laravel
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    links:
+      - db
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      UPLOAD_LIMIT: 512M
+    ports:
+      - target: 80
+        published: ${PHPMYADMIN_PUBLISHED_PORT:-80}
+        protocol: tcp
+        mode: host
+    networks:
+      - app-laravel
+
+networks:
+  app-laravel:
+    driver: bridge

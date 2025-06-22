@@ -1,0 +1,11 @@
+# Database
+/data/
+/modelagem/data.sql
+
+.idea
+.vscode
+.env
+
+# Dependencies
+/src/vendor/
+/src/node_modules/
