@@ -1,9 +1,13 @@
-import 'bootstrap';
+// Import bootstrap configuration first
+import './bootstrap';
 
 // Importar componentes
 import './components/masks';
 import './components/toast-manager';
 import './components/dependentes-manager';
+
+// Importar Pages
+import './pages/funcionarios';
 
 // Importar utilitários
 import { setupCSRF } from './utils/api';

@@ -490,7 +490,3 @@
     </form>
 </div>
 @endsection
-
-@push('scripts')
-@vite(['resources/js/pages/funcionarios.js'])
-@endpush

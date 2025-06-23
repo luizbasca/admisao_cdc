@@ -5,9 +5,7 @@ export function showToast(type, message, duration = 5000) {
 
     if (toast && messageElement) {
         messageElement.textContent = message;
-        const bsToast = new bootstrap.Toast(toast, {
-            delay: duration
-        });
+        const bsToast = new bootstrap.Toast(toast, { delay: duration });
         bsToast.show();
     }
 }
