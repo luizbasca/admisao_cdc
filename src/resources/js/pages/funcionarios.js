@@ -1,8 +1,15 @@
-import { DependentesManager } from '../components/dependentes-manager';
+import { DependentesManager } from '../components/dependentes-manager.js';
+import { FormValidator } from '../components/form-validator.js';
 
 export function initFuncionariosPage() {
     // Só executa se estiver na página de funcionários
     if (!document.getElementById('dependentesContainer')) return;
+
+    // Inicializar validador do formulário
+    const formValidator = new FormValidator('cadastroFuncionario', {
+        realTimeValidation: true,
+        showProgress: true
+    });
 
     // Inicializar gerenciador de dependentes
     const dependentesManager = new DependentesManager('dependentesContainer', {
@@ -21,8 +28,8 @@ export function initFuncionariosPage() {
     // Busca CEP
     setupCepSearch();
 
-    // Submissão via AJAX
-    setupFormSubmission();
+    // Submissão via AJAX com validação
+    setupFormSubmission(formValidator, dependentesManager);
 }
 
 function setupCepSearch() {
@@ -53,12 +60,25 @@ function setupCepSearch() {
     });
 }
 
-function setupFormSubmission() {
+function setupFormSubmission(formValidator, dependentesManager) {
     const form = document.getElementById('cadastroFuncionario');
     if (!form) return;
 
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
+
+        // Validar formulário principal
+        const isFormValid = formValidator.validateAll();
+
+        // Validar dependentes
+        const areDependentesValid = dependentesManager.validateAll();
+
+        if (!isFormValid || !areDependentesValid) {
+            if (window.showToast) {
+                window.showToast('error', 'Por favor, corrija os erros no formulário.');
+            }
+            return;
+        }
 
         const submitBtn = form.querySelector('.btn-submit');
         const originalText = submitBtn.innerHTML;
