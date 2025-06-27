@@ -24,28 +24,30 @@ class FuncionarioController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nome_completo' => 'required|string|max:100',
-            'cpf' => 'required|string|unique:funcionarios,cpf',
-            'data_nascimento' => 'required|date',
-            'genero' => 'required|in:masculino,feminino',
-            'estado_civil' => 'required|in:solteiro,casado,divorciado,viuvo,separado,uniao_estavel,outros',
-            'outros_estado_texto' => 'nullable|string|max:50',
+            // Dados Pessoais - Obrigatórios
+            'nome' => 'required|string|max:100',
+            'cpf' => 'required|cpf|unique:funcionarios,cpf',
+            'data_nascimento' => 'required|date|before:today',
             'pais_nascimento' => 'nullable|string|max:50',
-            'raca_cor' => 'nullable|in:branca,preta,parda,amarela,indigena,negro', // Adicionado 'negro'
-            'escolaridade' => 'nullable|in:01,02,03,04,05,06,07,08,09,10,12,13',
-            'deficiencia' => 'nullable|in:01,02,03,04,05,06',
+            'genero' => 'required|in:masculino,feminino',
+            'estado_civil' => 'required|in:solteiro,casado,divorciado,viuvo,uniao_estavel,outros',
+            'outros_estado_texto' => 'required_if:estado_civil,outros|max:50',
+            'raca_cor' => 'required|in:branco,negro,pardo,amarelo,indigena,nao_informado,outros',
+            'outros_raca_texto' => 'required_if:raca_cor,outros|max:50',
+            'escolaridade' => 'required|in:01,02,03,04,05,06,07,08,09,10,12,13',
+            'deficiencia' => 'required|in:01,02,03,04,05,06,07',
             'obs_deficiencia' => 'nullable|string|max:255',
 
-            // Documento
-            'tipo_documento' => 'required|in:rg,cnh,ctps,passaporte,ric,rne',
-            'numero_documento' => 'required|string|max:20',
-            'orgao_emissor' => 'required|string|max:10',
+            // Documento de Identificação - Obrigatórios
+            'tipo_documento' => 'required|in:rg,cnh,ctps,ric',
+            'numero_documento' => 'required|string|max:50',
+            'orgao_emissor' => 'required|string|max:20',
             'data_emissao' => 'nullable|date',
             'data_validade' => 'nullable|date',
             'info_adicionais' => 'nullable|string|max:255',
 
-            // Endereço - TODOS OBRIGATÓRIOS
-            'cep' => 'required|string',
+            // Endereço - Obrigatórios
+            'cep' => 'required|string|size:9',
             'rua' => 'required|string|max:100',
             'numero' => 'required|string|max:10',
             'complemento' => 'nullable|string|max:50',
@@ -53,19 +55,23 @@ class FuncionarioController extends Controller
             'cidade' => 'required|string|max:50',
             'estado' => 'required|string|size:2',
 
-            // Dados de estrangeiro (opcionais)
-            'data_chegada_brasil' => 'nullable|date',
-            'data_naturalizacao' => 'nullable|date',
-            'casado_brasileiro' => 'nullable|in:sim,nao',
-            'filho_brasileiro' => 'nullable|in:sim,nao',
+            // Funcionário Estrangeiro - Condicionais
+            'eh_estrangeiro' => 'boolean',
+            'pais_origem' => 'required_if:eh_estrangeiro,true|max:50',
+            'tipo_visto' => 'required_if:eh_estrangeiro,true|max:50',
+            'numero_visto' => 'required_if:eh_estrangeiro,true|max:50',
+            'data_chegada_brasil' => 'required_if:eh_estrangeiro,true|date',
+            'classificacao_trabalhador' => 'required_if:eh_estrangeiro,true|max:100',
+            'casado_brasileiro' => 'boolean',
+            'filhos_brasileiros' => 'boolean',
 
             // Dependentes
-            'dependentes' => 'nullable|array',
+            'dependentes' => 'nullable|array|max:5',
             'dependentes.*.nome_completo' => 'required_with:dependentes|string|max:100',
-            'dependentes.*.cpf' => 'nullable|string',
-            'dependentes.*.data_nascimento' => 'required_with:dependentes|date',
-            'dependentes.*.tipo_dependencia' => 'required_with:dependentes|in:conjuge,filho,enteado,menor_tutela,pais,outros',
-            'dependentes.*.outros_dependencia' => 'nullable|string|max:50',
+            'dependentes.*.cpf' => 'nullable|cpf',
+            'dependentes.*.data_nascimento' => 'required_with:dependentes|date|before:today',
+            'dependentes.*.tipo_dependencia' => 'required_with:dependentes|in:filho_menor_21,filho_universitario,filho_deficiente,conjuge,companheiro,pais,outros',
+            'dependentes.*.outros_especificar' => 'required_if:dependentes.*.tipo_dependencia,outros|max:100',
         ]);
 
         try {
@@ -73,18 +79,40 @@ class FuncionarioController extends Controller
 
             // Limpar formatação do CPF e CEP
             $validated['cpf'] = preg_replace('/[^0-9]/', '', $validated['cpf']);
-            $validated['cep'] = preg_replace('/[^0-9]/', '', $validated['cep']);
+            $validated['cep'] = preg_replace('/[^0-9-]/', '', $validated['cep']);
+
+            // Garantir valores padrão para campos booleanos
+            $validated['eh_estrangeiro'] = $validated['eh_estrangeiro'] ?? false;
+            $validated['casado_brasileiro'] = $validated['casado_brasileiro'] ?? false;
+            $validated['filhos_brasileiros'] = $validated['filhos_brasileiros'] ?? false;
+            $validated['pais_nascimento'] = $validated['pais_nascimento'] ?? 'Brasil';
+
+            // Separar dados dos dependentes
+            $dependentesData = $validated['dependentes'] ?? [];
+            unset($validated['dependentes']);
+
+            // Remove campos vazios opcionais
+            $dadosFuncionario = array_filter($validated, function ($value) {
+                return $value !== '' && $value !== null;
+            });
 
             // Criar funcionário
-            $funcionario = Funcionario::create($validated);
+            $funcionario = Funcionario::create($dadosFuncionario);
 
             // Criar dependentes se existirem
-            if (isset($validated['dependentes'])) {
-                foreach ($validated['dependentes'] as $dependenteData) {
-                    if (!empty($dependenteData['cpf'])) {
-                        $dependenteData['cpf'] = preg_replace('/[^0-9]/', '', $dependenteData['cpf']);
-                    }
-                    $funcionario->dependentes()->create($dependenteData);
+            foreach ($dependentesData as $dependente) {
+                // Limpar CPF do dependente se fornecido
+                if (!empty($dependente['cpf'])) {
+                    $dependente['cpf'] = preg_replace('/[^0-9]/', '', $dependente['cpf']);
+                }
+
+                // Remove campos vazios opcionais
+                $dadosDependente = array_filter($dependente, function ($value) {
+                    return $value !== '' && $value !== null;
+                });
+
+                if (!empty($dadosDependente)) {
+                    $funcionario->dependentes()->create($dadosDependente);
                 }
             }
 
@@ -118,8 +146,114 @@ class FuncionarioController extends Controller
 
     public function update(Request $request, Funcionario $funcionario)
     {
-        // Similar ao store, mas para atualização
-        // Implementar conforme necessário
+        $validated = $request->validate([
+            // Mesmas validações do store, mas sem unique no CPF se for o mesmo funcionário
+            'nome' => 'required|string|max:100',
+            'cpf' => 'required|cpf|unique:funcionarios,cpf,' . $funcionario->id,
+            'data_nascimento' => 'required|date|before:today',
+            'pais_nascimento' => 'nullable|string|max:50',
+            'genero' => 'required|in:masculino,feminino',
+            'estado_civil' => 'required|in:solteiro,casado,divorciado,viuvo,uniao_estavel,outros',
+            'outros_estado_texto' => 'required_if:estado_civil,outros|max:50',
+            'raca_cor' => 'required|in:branco,negro,pardo,amarelo,indigena,nao_informado,outros',
+            'outros_raca_texto' => 'required_if:raca_cor,outros|max:50',
+            'escolaridade' => 'required|in:01,02,03,04,05,06,07,08,09,10,12,13',
+            'deficiencia' => 'required|in:01,02,03,04,05,06,07',
+            'obs_deficiencia' => 'nullable|string|max:255',
+
+            // Documento de Identificação
+            'tipo_documento' => 'required|in:rg,cnh,ctps,ric',
+            'numero_documento' => 'required|string|max:50',
+            'orgao_emissor' => 'required|string|max:20',
+            'data_emissao' => 'nullable|date',
+            'data_validade' => 'nullable|date',
+            'info_adicionais' => 'nullable|string|max:255',
+
+            // Endereço
+            'cep' => 'required|string|size:9',
+            'rua' => 'required|string|max:100',
+            'numero' => 'required|string|max:10',
+            'complemento' => 'nullable|string|max:50',
+            'bairro' => 'required|string|max:50',
+            'cidade' => 'required|string|max:50',
+            'estado' => 'required|string|size:2',
+
+            // Funcionário Estrangeiro
+            'eh_estrangeiro' => 'boolean',
+            'pais_origem' => 'required_if:eh_estrangeiro,true|max:50',
+            'tipo_visto' => 'required_if:eh_estrangeiro,true|max:50',
+            'numero_visto' => 'required_if:eh_estrangeiro,true|max:50',
+            'data_chegada_brasil' => 'required_if:eh_estrangeiro,true|date',
+            'classificacao_trabalhador' => 'required_if:eh_estrangeiro,true|max:100',
+            'casado_brasileiro' => 'boolean',
+            'filhos_brasileiros' => 'boolean',
+
+            // Dependentes
+            'dependentes' => 'nullable|array|max:5',
+            'dependentes.*.nome_completo' => 'required_with:dependentes|string|max:100',
+            'dependentes.*.cpf' => 'nullable|cpf',
+            'dependentes.*.data_nascimento' => 'required_with:dependentes|date|before:today',
+            'dependentes.*.tipo_dependencia' => 'required_with:dependentes|in:filho_menor_21,filho_universitario,filho_deficiente,conjuge,companheiro,pais,outros',
+            'dependentes.*.outros_especificar' => 'required_if:dependentes.*.tipo_dependencia,outros|max:100',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            // Limpar formatação do CPF e CEP
+            $validated['cpf'] = preg_replace('/[^0-9]/', '', $validated['cpf']);
+            $validated['cep'] = preg_replace('/[^0-9-]/', '', $validated['cep']);
+
+            // Garantir valores padrão para campos booleanos
+            $validated['eh_estrangeiro'] = $validated['eh_estrangeiro'] ?? false;
+            $validated['casado_brasileiro'] = $validated['casado_brasileiro'] ?? false;
+            $validated['filhos_brasileiros'] = $validated['filhos_brasileiros'] ?? false;
+            $validated['pais_nascimento'] = $validated['pais_nascimento'] ?? 'Brasil';
+
+            // Separar dados dos dependentes
+            $dependentesData = $validated['dependentes'] ?? [];
+            unset($validated['dependentes']);
+
+            // Remove campos vazios opcionais
+            $dadosFuncionario = array_filter($validated, function ($value) {
+                return $value !== '' && $value !== null;
+            });
+
+            // Atualizar funcionário
+            $funcionario->update($dadosFuncionario);
+
+            // Remover dependentes existentes e recriar
+            $funcionario->dependentes()->delete();
+
+            // Criar novos dependentes
+            foreach ($dependentesData as $dependente) {
+                if (!empty($dependente['cpf'])) {
+                    $dependente['cpf'] = preg_replace('/[^0-9]/', '', $dependente['cpf']);
+                }
+
+                $dadosDependente = array_filter($dependente, function ($value) {
+                    return $value !== '' && $value !== null;
+                });
+
+                if (!empty($dadosDependente)) {
+                    $funcionario->dependentes()->create($dadosDependente);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Funcionário atualizado com sucesso!',
+                'redirect' => route('funcionarios.show', $funcionario->id)
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao atualizar funcionário: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function destroy(Funcionario $funcionario)

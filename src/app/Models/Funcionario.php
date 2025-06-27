@@ -1,4 +1,5 @@
 <?php
+// app/Models/Funcionario.php
 
 namespace App\Models;
 
@@ -10,7 +11,8 @@ class Funcionario extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nome_completo',
+        // Dados Pessoais
+        'nome',
         'cpf',
         'data_nascimento',
         'pais_nascimento',
@@ -18,26 +20,37 @@ class Funcionario extends Model
         'estado_civil',
         'outros_estado_texto',
         'raca_cor',
+        'outros_raca_texto',
         'escolaridade',
         'deficiencia',
         'obs_deficiencia',
+
+        // Documento de Identificação
         'tipo_documento',
         'numero_documento',
         'orgao_emissor',
         'data_emissao',
         'data_validade',
         'info_adicionais',
+
+        // Endereço
+        'cep',
         'rua',
         'numero',
         'complemento',
         'bairro',
         'cidade',
         'estado',
-        'cep',
+
+        // Funcionário Estrangeiro
+        'eh_estrangeiro',
+        'pais_origem',
+        'tipo_visto',
+        'numero_visto',
         'data_chegada_brasil',
-        'data_naturalizacao',
+        'classificacao_trabalhador',
         'casado_brasileiro',
-        'filho_brasileiro'
+        'filhos_brasileiros',
     ];
 
     protected $casts = [
@@ -45,7 +58,9 @@ class Funcionario extends Model
         'data_emissao' => 'date',
         'data_validade' => 'date',
         'data_chegada_brasil' => 'date',
-        'data_naturalizacao' => 'date',
+        'eh_estrangeiro' => 'boolean',
+        'casado_brasileiro' => 'boolean',
+        'filhos_brasileiros' => 'boolean',
     ];
 
     public function dependentes()
@@ -56,34 +71,71 @@ class Funcionario extends Model
     // Accessor para formatar CPF
     public function getCpfFormatadoAttribute()
     {
-        return preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $this->cpf);
+        if ($this->cpf) {
+            return preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $this->cpf);
+        }
+        return null;
     }
 
     // Accessor para formatar CEP
     public function getCepFormatadoAttribute()
     {
-        return preg_replace('/(\d{5})(\d{3})/', '$1-$2', $this->cep);
+        if ($this->cep) {
+            return preg_replace('/(\d{5})(\d{3})/', '$1-$2', $this->cep);
+        }
+        return null;
     }
 
     // Método para verificar se é estrangeiro
     public function isEstrangeiro(): bool
     {
-        return $this->data_chegada_brasil ||
-            $this->data_naturalizacao ||
+        return $this->eh_estrangeiro ||
+            $this->data_chegada_brasil ||
             $this->casado_brasileiro ||
-            $this->filho_brasileiro;
+            $this->filhos_brasileiros;
     }
 
     // Método para formatar estado civil
     public function getEstadoCivilFormatado(): string
     {
-        $estadoCivil = ucfirst(str_replace('_', ' ', $this->estado_civil));
+        $estadosCivis = [
+            'solteiro' => 'Solteiro',
+            'casado' => 'Casado',
+            'divorciado' => 'Divorciado',
+            'viuvo' => 'Viúvo',
+            'uniao_estavel' => 'União Estável',
+            'outros' => 'Outros'
+        ];
+
+        $estadoCivil = $estadosCivis[$this->estado_civil] ?? 'Não informado';
 
         if ($this->estado_civil === 'outros' && $this->outros_estado_texto) {
             $estadoCivil .= " ({$this->outros_estado_texto})";
         }
 
         return $estadoCivil;
+    }
+
+    // Método para formatar raça/cor
+    public function getRacaCorFormatada(): string
+    {
+        $racasCores = [
+            'branco' => 'Branco',
+            'negro' => 'Negro',
+            'pardo' => 'Pardo',
+            'amarelo' => 'Amarelo',
+            'indigena' => 'Indígena',
+            'nao_informado' => 'Não informado',
+            'outros' => 'Outros'
+        ];
+
+        $racaCor = $racasCores[$this->raca_cor] ?? 'Não informado';
+
+        if ($this->raca_cor === 'outros' && $this->outros_raca_texto) {
+            $racaCor .= " ({$this->outros_raca_texto})";
+        }
+
+        return $racaCor;
     }
 
     // Método para formatar escolaridade
@@ -111,15 +163,35 @@ class Funcionario extends Model
     public function getDeficienciaFormatada(): string
     {
         $deficiencias = [
-            '01' => 'Não tenho Deficiência',
-            '02' => 'Auditiva',
-            '03' => 'Visual',
-            '04' => 'Intelectual',
-            '05' => 'Mental',
-            '06' => 'Reabilitado'
+            '01' => 'Nenhuma',
+            '02' => 'Física',
+            '03' => 'Auditiva',
+            '04' => 'Visual',
+            '05' => 'Intelectual',
+            '06' => 'Múltipla',
+            '07' => 'Reabilitado'
         ];
 
-        return $deficiencias[$this->deficiencia] ?? 'Não informado';
+        $deficiencia = $deficiencias[$this->deficiencia] ?? 'Não informado';
+
+        if ($this->obs_deficiencia && $this->deficiencia !== '01') {
+            $deficiencia .= " ({$this->obs_deficiencia})";
+        }
+
+        return $deficiencia;
+    }
+
+    // Método para formatar tipo de documento
+    public function getTipoDocumentoFormatado(): string
+    {
+        $tiposDocumento = [
+            'rg' => 'RG - Registro Geral',
+            'cnh' => 'CNH - Carteira Nacional de Habilitação',
+            'ctps' => 'CTPS - Carteira de Trabalho',
+            'ric' => 'RIC - Registro de Identidade Civil'
+        ];
+
+        return $tiposDocumento[$this->tipo_documento] ?? 'Não informado';
     }
 
     // Método para endereço completo
@@ -131,6 +203,18 @@ class Funcionario extends Model
             $endereco .= " - {$this->complemento}";
         }
 
+        $endereco .= ", {$this->bairro}, {$this->cidade}/{$this->estado}";
+
+        if ($this->cep) {
+            $endereco .= " - CEP: {$this->getCepFormatadoAttribute()}";
+        }
+
         return $endereco;
+    }
+
+    // Método para formatar gênero
+    public function getGeneroFormatado(): string
+    {
+        return $this->genero === 'masculino' ? 'Masculino' : 'Feminino';
     }
 }
