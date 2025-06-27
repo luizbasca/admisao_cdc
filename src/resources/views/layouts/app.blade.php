@@ -11,6 +11,9 @@
     @vite(['resources/scss/app.scss', 'resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
+    
+    <!-- Livewire Styles -->
+    @livewireStyles
 </head>
 
 <body>
@@ -19,13 +22,16 @@
 
     <!-- Main Content -->
     <main class="container my-4">
-        @include('partials.alerts')
-        @yield('content')
+    @include('partials.alerts')
+    @yield('content')
     </main>
 
     @include('partials.toasts')
 
     @stack('scripts')
+    
+    <!-- Livewire Scripts -->
+    @livewireScripts
 </body>
 
 </html>

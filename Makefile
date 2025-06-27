@@ -89,8 +89,12 @@ pint:
 	docker compose exec app ./vendor/bin/pint --verbose
 pint-test:
 	docker compose exec app ./vendor/bin/pint --verbose --test
+composer-update:
+	docker compose exec app composer update
+npm-update:
+	docker compose exec app npm update
 npm-install:
-	docker compose exec app npm instal
+	docker compose exec app npm install
 npm-dev:
 	docker compose exec app npm run dev
 npm-build:

@@ -1,5 +1,4 @@
 <?php
-// app/Models/Funcionario.php
 
 namespace App\Models;
 

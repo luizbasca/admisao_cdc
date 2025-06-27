@@ -1,13 +1,11 @@
 // Import bootstrap configuration first
 import './bootstrap';
 
-// Importar componentes
-import './components/masks';
-import './components/toast-manager';
-import './components/dependentes-manager';
+import Alpine from 'alpinejs'
+import mask from '@alpinejs/mask'
 
-// Importar Pages
-import './pages/funcionarios';
+Alpine.plugin(mask)
+Alpine.start()
 
 // Importar utilitários
 import { setupCSRF } from './utils/api';
