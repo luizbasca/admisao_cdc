@@ -28,7 +28,7 @@ class FuncionarioController extends Controller
             'nome' => 'required|string|max:100',
             'cpf' => 'required|cpf|unique:funcionarios,cpf',
             'data_nascimento' => 'required|date|before:today',
-            'pais_nascimento' => 'nullable|string|max:50',
+            'pais_nascimento' => 'required|string|max:50',
             'genero' => 'required|in:masculino,feminino',
             'estado_civil' => 'required|in:solteiro,casado,divorciado,viuvo,uniao_estavel,outros',
             'outros_estado_texto' => 'required_if:estado_civil,outros|max:50',
@@ -36,7 +36,6 @@ class FuncionarioController extends Controller
             'outros_raca_texto' => 'required_if:raca_cor,outros|max:50',
             'escolaridade' => 'required|in:01,02,03,04,05,06,07,08,09,10,12,13',
             'deficiencia' => 'required|in:01,02,03,04,05,06,07',
-            'obs_deficiencia' => 'nullable|string|max:255',
 
             // Documento de Identificação - Obrigatórios
             'tipo_documento' => 'required|in:rg,cnh,ctps,ric',
@@ -85,7 +84,6 @@ class FuncionarioController extends Controller
             $validated['eh_estrangeiro'] = $validated['eh_estrangeiro'] ?? false;
             $validated['casado_brasileiro'] = $validated['casado_brasileiro'] ?? false;
             $validated['filhos_brasileiros'] = $validated['filhos_brasileiros'] ?? false;
-            $validated['pais_nascimento'] = $validated['pais_nascimento'] ?? 'Brasil';
 
             // Separar dados dos dependentes
             $dependentesData = $validated['dependentes'] ?? [];
@@ -151,7 +149,7 @@ class FuncionarioController extends Controller
             'nome' => 'required|string|max:100',
             'cpf' => 'required|cpf|unique:funcionarios,cpf,' . $funcionario->id,
             'data_nascimento' => 'required|date|before:today',
-            'pais_nascimento' => 'nullable|string|max:50',
+            'pais_nascimento' => 'required|string|max:50',
             'genero' => 'required|in:masculino,feminino',
             'estado_civil' => 'required|in:solteiro,casado,divorciado,viuvo,uniao_estavel,outros',
             'outros_estado_texto' => 'required_if:estado_civil,outros|max:50',
@@ -159,7 +157,6 @@ class FuncionarioController extends Controller
             'outros_raca_texto' => 'required_if:raca_cor,outros|max:50',
             'escolaridade' => 'required|in:01,02,03,04,05,06,07,08,09,10,12,13',
             'deficiencia' => 'required|in:01,02,03,04,05,06,07',
-            'obs_deficiencia' => 'nullable|string|max:255',
 
             // Documento de Identificação
             'tipo_documento' => 'required|in:rg,cnh,ctps,ric',
@@ -208,7 +205,6 @@ class FuncionarioController extends Controller
             $validated['eh_estrangeiro'] = $validated['eh_estrangeiro'] ?? false;
             $validated['casado_brasileiro'] = $validated['casado_brasileiro'] ?? false;
             $validated['filhos_brasileiros'] = $validated['filhos_brasileiros'] ?? false;
-            $validated['pais_nascimento'] = $validated['pais_nascimento'] ?? 'Brasil';
 
             // Separar dados dos dependentes
             $dependentesData = $validated['dependentes'] ?? [];

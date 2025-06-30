@@ -10,12 +10,6 @@
         </button>
     </div>
     <div class="card-body">
-        <div class="alert alert-warning" role="alert">
-            <i class="bi bi-exclamation-triangle me-2"></i>
-            <strong>Atenção:</strong> Caso o funcionário tenha dependentes para o Imposto de Renda, 
-            é obrigatório preencher a Declaração de Dependentes para o Imposto de Renda.
-        </div>
-
         @forelse($dependentes as $index => $dependente)
             @include('livewire.funcionario.partials.dependente-card', ['index' => $index, 'dependente' => $dependente])
         @empty

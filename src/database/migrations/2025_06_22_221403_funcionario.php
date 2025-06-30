@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('nome', 100);
             $table->string('cpf', 14)->unique();
             $table->date('data_nascimento');
-            $table->string('pais_nascimento')->default('Brasil');
+            $table->string('pais_nascimento');
             $table->enum('genero', ['masculino', 'feminino']);
             $table->enum('estado_civil', ['solteiro', 'casado', 'divorciado', 'viuvo', 'uniao_estavel', 'outros']);
             $table->string('outros_estado_texto', 50)->nullable();
@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('outros_raca_texto', 50)->nullable();
             $table->string('escolaridade', 2);
             $table->string('deficiencia', 2);
-            $table->text('obs_deficiencia')->nullable();
 
             // Documento de Identificação
             $table->enum('tipo_documento', ['rg', 'cnh', 'ctps', 'ric']);
@@ -46,9 +45,7 @@ return new class extends Migration
             $table->boolean('eh_estrangeiro')->default(false);
             $table->string('pais_origem', 50)->nullable();
             $table->string('tipo_visto', 50)->nullable();
-            $table->string('numero_visto', 50)->nullable();
             $table->date('data_chegada_brasil')->nullable();
-            $table->string('classificacao_trabalhador', 100)->nullable();
             $table->boolean('casado_brasileiro')->default(false); // Alterado de enum para boolean
             $table->boolean('filhos_brasileiros')->default(false); // Alterado nome e tipo
 

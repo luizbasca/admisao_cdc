@@ -1,4 +1,3 @@
-{{-- resources/views/livewire/funcionario/dados-pessoais.blade.php --}}
 <div class="card mb-4">
     <div class="card-header">
         <h5>Dados do Funcionário</h5>
@@ -96,16 +95,6 @@
                 @include('livewire.funcionario.partials.deficiencia')
             </div>
 
-            {{-- Observações sobre Deficiência --}}
-            <div class="col-12">
-                <div class="form-floating">
-                    <textarea class="form-control" 
-                              wire:model="funcionario.obs_deficiencia" 
-                              style="height: 100px" 
-                              placeholder="Observações"></textarea>
-                    <label>Observações sobre deficiência</label>
-                </div>
-            </div>
         </div>
     </div>
 </div>

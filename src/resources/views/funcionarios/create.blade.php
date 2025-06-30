@@ -1,4 +1,3 @@
-<!-- Exemplo: resources/views/funcionarios/create.blade.php -->
 @extends('layouts.app')
 
 @section('title', 'Cadastrar Funcionário')

@@ -23,7 +23,6 @@ class Funcionario extends Model
         'outros_raca_texto',
         'escolaridade',
         'deficiencia',
-        'obs_deficiencia',
 
         // Documento de Identificação
         'tipo_documento',
@@ -46,9 +45,7 @@ class Funcionario extends Model
         'eh_estrangeiro',
         'pais_origem',
         'tipo_visto',
-        'numero_visto',
         'data_chegada_brasil',
-        'classificacao_trabalhador',
         'casado_brasileiro',
         'filhos_brasileiros',
     ];

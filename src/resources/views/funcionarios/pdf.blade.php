@@ -215,11 +215,6 @@
                 </div>
             </div>
             @endif
-            @if($funcionario->obs_deficiencia)
-            <div class="info-row">
-                <div class="info-label">Obs. Deficiência:</div>
-                <div class="info-value">{{ $funcionario->obs_deficiencia }}</div>
-            </div>
             @endif
         </div>
     </div>

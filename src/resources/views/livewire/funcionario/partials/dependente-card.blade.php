@@ -41,7 +41,6 @@
                         <div class="invalid-feedback">{{ $message }}</div> 
                     @enderror
                 </div>
-                <div class="form-text">Opcional para menores de idade</div>
             </div>
 
             {{-- Data de Nascimento --}}

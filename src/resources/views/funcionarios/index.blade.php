@@ -2,6 +2,21 @@
 
 @section('title', 'Lista de Funcionários - Sistema E-Social')
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+<style>
+    .avatar-sm {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+    .dataTables_wrapper .dataTables_length select {
+        padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -19,9 +34,9 @@
 
 @if($funcionarios->count() > 0)
     <div class="card">
-        <div class="card-body p-0">
+        <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover mb-0">
+                <table id="funcionariosTable" class="table table-hover">
                     <thead class="table-primary">
                         <tr>
                             <th>ID</th>
@@ -71,7 +86,7 @@
                                     <span class="badge bg-secondary">0</span>
                                 @endif
                             </td>
-                            <td>
+                            <td data-order="{{ $funcionario->created_at->timestamp }}">
                                 <small>{{ $funcionario->created_at->format('d/m/Y H:i') }}</small>
                             </td>
                             <td>
@@ -100,12 +115,6 @@
                 </table>
             </div>
         </div>
-        
-        @if($funcionarios->hasPages())
-        <div class="card-footer">
-            {{ $funcionarios->links() }}
-        </div>
-        @endif
     </div>
 @else
     <div class="text-center py-5">
@@ -149,18 +158,35 @@
 </div>
 @endsection
 
-@push('styles')
-<style>
-    .avatar-sm {
-        width: 32px;
-        height: 32px;
-        font-size: 14px;
-    }
-</style>
-@endpush
-
 @push('scripts')
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+
 <script>
+$(document).ready(function() {
+    $('#funcionariosTable').DataTable({
+        responsive: true,
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/pt-BR.json'
+        },
+        pageLength: 25,
+        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
+        order: [[6, 'desc']], // Ordenar por data de cadastro (mais recente primeiro)
+        columnDefs: [
+            {
+                targets: [7], // Coluna de ações
+                orderable: false,
+                searchable: false
+            }
+        ],
+        dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+             '<"row"<"col-sm-12"tr>>' +
+             '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+    });
+});
+
 function confirmarExclusao(id) {
     const form = document.getElementById('deleteForm');
     form.action = `/funcionarios/${id}`;

@@ -1,10 +1,25 @@
-{{-- resources/views/livewire/funcionario/endereco.blade.php --}}
 <div class="card mb-4">
     <div class="card-header">
         <h5>Endereço</h5>
     </div>
     <div class="card-body">
         <div class="row g-3">
+
+            {{-- CEP --}}
+            <div class="col-md-3">
+                <div class="form-floating">
+                    <input type="text" 
+                        class="form-control @error('funcionario.cep') is-invalid @enderror" 
+                        wire:model="funcionario.cep" 
+                        x-mask="99999-999" 
+                        placeholder="00000-000">
+                    <label>CEP *</label>
+                    @error('funcionario.cep') 
+                        <div class="invalid-feedback">{{ $message }}</div> 
+                    @enderror
+                </div>
+            </div>
+            
             {{-- Logradouro --}}
             <div class="col-md-6">
                 <div class="form-floating">
@@ -28,21 +43,6 @@
                            placeholder="123">
                     <label>Número *</label>
                     @error('funcionario.numero') 
-                        <div class="invalid-feedback">{{ $message }}</div> 
-                    @enderror
-                </div>
-            </div>
-
-            {{-- CEP --}}
-            <div class="col-md-3">
-                <div class="form-floating">
-                    <input type="text" 
-                        class="form-control @error('funcionario.cep') is-invalid @enderror" 
-                        wire:model="funcionario.cep" 
-                        x-mask="99999-999" 
-                        placeholder="00000-000">
-                    <label>CEP *</label>
-                    @error('funcionario.cep') 
                         <div class="invalid-feedback">{{ $message }}</div> 
                     @enderror
                 </div>

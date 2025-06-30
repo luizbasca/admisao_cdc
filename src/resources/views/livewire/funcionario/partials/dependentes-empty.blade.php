@@ -5,7 +5,7 @@
     </div>
     <h5 class="text-muted">Nenhum dependente cadastrado</h5>
     <p class="text-muted mb-4">
-        Clique no botão "Adicionar" para incluir dependentes do funcionário.
+        Clique no botão "Adicionar" para incluir dependentes.
     </p>
     <div class="alert alert-info" role="alert">
         <i class="bi bi-lightbulb me-2"></i>

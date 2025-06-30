@@ -1,13 +1,8 @@
-{{-- resources/views/livewire/funcionario/documento-identificacao.blade.php --}}
 <div class="card mb-4">
     <div class="card-header">
         <h5>Documento de Identificação</h5>
     </div>
     <div class="card-body">
-        <div class="alert alert-info" role="alert">
-            <i class="bi bi-info-circle me-2"></i>
-            Selecione apenas <strong>UM DOCUMENTO DE IDENTIFICAÇÃO</strong> e preencha os campos necessários.
-        </div>
 
         <div class="row g-3">
             {{-- Tipo de Documento --}}

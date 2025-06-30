@@ -13,7 +13,7 @@ class FuncionarioForm extends Component
         'nome' => '',
         'cpf' => '',
         'data_nascimento' => '',
-        'pais_nascimento' => 'Brasil',
+        'pais_nascimento' => '',
         'genero' => '',
         'estado_civil' => '',
         'outros_estado_texto' => '',
@@ -21,7 +21,6 @@ class FuncionarioForm extends Component
         'outros_raca_texto' => '',
         'escolaridade' => '',
         'deficiencia' => '',
-        'obs_deficiencia' => '',
 
         // Documento de Identificação
         'tipo_documento' => '',
@@ -44,9 +43,7 @@ class FuncionarioForm extends Component
         'eh_estrangeiro' => false,
         'pais_origem' => '',
         'tipo_visto' => '',
-        'numero_visto' => '',
         'data_chegada_brasil' => '',
-        'classificacao_trabalhador' => '',
         'casado_brasileiro' => false,
         'filhos_brasileiros' => false,
     ];
@@ -151,6 +148,7 @@ class FuncionarioForm extends Component
         'funcionario.data_nascimento' => 'required|date|before:today',
         'funcionario.genero' => 'required|in:masculino,feminino',
         'funcionario.estado_civil' => 'required',
+        'funcionario.pais_nascimento' => 'required|string',
         'funcionario.outros_estado_texto' => 'required_if:funcionario.estado_civil,outros|max:50',
         'funcionario.raca_cor' => 'required',
         'funcionario.outros_raca_texto' => 'required_if:funcionario.raca_cor,outros|max:50',
@@ -173,28 +171,79 @@ class FuncionarioForm extends Component
         // Funcionário Estrangeiro - Condicionais
         'funcionario.pais_origem' => 'required_if:funcionario.eh_estrangeiro,true|max:50',
         'funcionario.tipo_visto' => 'required_if:funcionario.eh_estrangeiro,true|max:50',
-        'funcionario.numero_visto' => 'required_if:funcionario.eh_estrangeiro,true|max:50',
         'funcionario.data_chegada_brasil' => 'required_if:funcionario.eh_estrangeiro,true|date',
-        'funcionario.classificacao_trabalhador' => 'required_if:funcionario.eh_estrangeiro,true|max:100',
 
         // Dependentes
         'dependentes.*.nome_completo' => 'required|string|max:100',
-        'dependentes.*.cpf' => 'nullable|cpf',
+        'dependentes.*.cpf' => 'required|cpf',
         'dependentes.*.data_nascimento' => 'required|date|before:today',
         'dependentes.*.tipo_dependencia' => 'required|string',
         'dependentes.*.outros_especificar' => 'required_if:dependentes.*.tipo_dependencia,outros|max:100',
     ];
 
+
     protected $messages = [
+        // Dados Pessoais
         'funcionario.nome.required' => 'O nome é obrigatório.',
+        'funcionario.nome.max' => 'O nome deve ter no máximo 100 caracteres.',
         'funcionario.cpf.required' => 'O CPF é obrigatório.',
         'funcionario.cpf.cpf' => 'O CPF deve ser válido.',
         'funcionario.cpf.unique' => 'Este CPF já está cadastrado.',
         'funcionario.data_nascimento.required' => 'A data de nascimento é obrigatória.',
+        'funcionario.data_nascimento.date' => 'A data de nascimento deve ser uma data válida.',
         'funcionario.data_nascimento.before' => 'A data de nascimento deve ser anterior a hoje.',
         'funcionario.genero.required' => 'O gênero é obrigatório.',
+        'funcionario.pais_nascimento.required' => 'O pais nascimento é obrigatório.',
+        'funcionario.genero.in' => 'O gênero deve ser masculino ou feminino.',
+        'funcionario.estado_civil.required' => 'O estado civil é obrigatório.',
+        'funcionario.outros_estado_texto.required_if' => 'Especifique o estado civil quando selecionar "Outros".',
+        'funcionario.outros_estado_texto.max' => 'A especificação do estado civil deve ter no máximo 50 caracteres.',
+        'funcionario.raca_cor.required' => 'A raça/cor é obrigatória.',
+        'funcionario.outros_raca_texto.required_if' => 'Especifique a raça/cor quando selecionar "Outros".',
+        'funcionario.outros_raca_texto.max' => 'A especificação da raça/cor deve ter no máximo 50 caracteres.',
+        'funcionario.escolaridade.required' => 'A escolaridade é obrigatória.',
+        'funcionario.deficiencia.required' => 'A informação sobre deficiência é obrigatória.',
+
+        // Documento de Identificação
+        'funcionario.tipo_documento.required' => 'O tipo de documento é obrigatório.',
+        'funcionario.numero_documento.required' => 'O número do documento é obrigatório.',
+        'funcionario.numero_documento.max' => 'O número do documento deve ter no máximo 50 caracteres.',
+        'funcionario.orgao_emissor.required' => 'O órgão emissor é obrigatório.',
+        'funcionario.orgao_emissor.max' => 'O órgão emissor deve ter no máximo 20 caracteres.',
+
+        // Endereço
         'funcionario.cep.required' => 'O CEP é obrigatório.',
         'funcionario.cep.size' => 'O CEP deve ter 9 caracteres (formato: 00000-000).',
+        'funcionario.rua.required' => 'A logradouro é obrigatória.',
+        'funcionario.rua.max' => 'A logradouro deve ter no máximo 100 caracteres.',
+        'funcionario.numero.required' => 'O número é obrigatório.',
+        'funcionario.numero.max' => 'O número deve ter no máximo 10 caracteres.',
+        'funcionario.bairro.required' => 'O bairro é obrigatório.',
+        'funcionario.bairro.max' => 'O bairro deve ter no máximo 50 caracteres.',
+        'funcionario.cidade.required' => 'A cidade é obrigatória.',
+        'funcionario.cidade.max' => 'A cidade deve ter no máximo 50 caracteres.',
+        'funcionario.estado.required' => 'O estado é obrigatório.',
+        'funcionario.estado.size' => 'O estado deve ter exatamente 2 caracteres.',
+
+        // Funcionário Estrangeiro
+        'funcionario.pais_origem.required_if' => 'O país de origem é obrigatório para funcionários estrangeiros.',
+        'funcionario.pais_origem.max' => 'O país de origem deve ter no máximo 50 caracteres.',
+        'funcionario.tipo_visto.required_if' => 'O tipo de visto é obrigatório para funcionários estrangeiros.',
+        'funcionario.tipo_visto.max' => 'O tipo de visto deve ter no máximo 50 caracteres.',
+        'funcionario.data_chegada_brasil.required_if' => 'A data de chegada ao Brasil é obrigatória para funcionários estrangeiros.',
+        'funcionario.data_chegada_brasil.date' => 'A data de chegada ao Brasil deve ser uma data válida.',
+
+        // Dependentes
+        'dependentes.*.nome_completo.required' => 'O nome completo do dependente é obrigatório.',
+        'dependentes.*.nome_completo.max' => 'O nome completo do dependente deve ter no máximo 100 caracteres.',
+        'dependentes.*.cpf.cpf' => 'O CPF do dependente deve ser válido.',
+        'dependentes.*.cpf.required' => 'O CPF do dependente é obrigatório.',
+        'dependentes.*.data_nascimento.required' => 'A data de nascimento do dependente é obrigatória.',
+        'dependentes.*.data_nascimento.date' => 'A data de nascimento do dependente deve ser uma data válida.',
+        'dependentes.*.data_nascimento.before' => 'A data de nascimento do dependente deve ser anterior a hoje.',
+        'dependentes.*.tipo_dependencia.required' => 'O tipo de dependência é obrigatório.',
+        'dependentes.*.outros_especificar.required_if' => 'Especifique o tipo de dependência quando selecionar "Outros".',
+        'dependentes.*.outros_especificar.max' => 'A especificação do tipo de dependência deve ter no máximo 100 caracteres.',
     ];
 
     public function mount($funcionarioId = null)
@@ -262,15 +311,14 @@ class FuncionarioForm extends Component
         }
     }
 
+    // Manter o método existente também
     public function updatedFuncionarioEhEstrangeiro()
     {
         // Limpa os campos de estrangeiro se não for estrangeiro
         if (!$this->funcionario['eh_estrangeiro']) {
             $this->funcionario['pais_origem'] = '';
             $this->funcionario['tipo_visto'] = '';
-            $this->funcionario['numero_visto'] = '';
             $this->funcionario['data_chegada_brasil'] = '';
-            $this->funcionario['classificacao_trabalhador'] = '';
             $this->funcionario['casado_brasileiro'] = false;
             $this->funcionario['filhos_brasileiros'] = false;
         }
@@ -311,7 +359,6 @@ class FuncionarioForm extends Component
     public function resetForm()
     {
         $this->reset(['funcionario', 'dependentes']);
-        $this->funcionario['pais_nascimento'] = 'Brasil';
         $this->funcionario['eh_estrangeiro'] = false;
     }
 
