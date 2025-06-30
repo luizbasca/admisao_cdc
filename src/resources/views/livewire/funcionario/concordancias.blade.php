@@ -68,12 +68,11 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-check">
-                        <input class="form-check-input @error('concordancia_lgpd') is-invalid @enderror" 
+                        <input class="form-check-input @error('funcionario.concordancia_lgpd') is-invalid @enderror" 
                                type="checkbox" 
-                               wire:model="concordancia_lgpd" 
-                               id="concordancia_lgpd"
-                               required>
-                        <label class="form-check-label fw-bold" for="concordancia_lgpd">
+                               wire:model="funcionario.concordancia_lgpd" 
+                               id="funcionario.concordancia_lgpd">
+                        <label class="form-check-label fw-bold" for="funcionario.concordancia_lgpd">
                             Li e concordo com termos.
                         </label>
                         @error('concordancia_lgpd')

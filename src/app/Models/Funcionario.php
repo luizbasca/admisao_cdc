@@ -17,9 +17,7 @@ class Funcionario extends Model
         'pais_nascimento',
         'genero',
         'estado_civil',
-        'outros_estado_texto',
         'raca_cor',
-        'outros_raca_texto',
         'escolaridade',
         'deficiencia',
 
@@ -49,14 +47,17 @@ class Funcionario extends Model
 
         // Observação
         'observacao',
+
+        // Concordância com a LGPD
+        'concordancia_lgpd',
     ];
 
     protected $casts = [
+        'eh_estrangeiro' => 'boolean',
         'data_nascimento' => 'date',
         'data_emissao' => 'date',
         'data_validade' => 'date',
         'data_chegada_brasil' => 'date',
-        'eh_estrangeiro' => 'boolean',
         'casado_brasileiro' => 'boolean',
         'filhos_brasileiros' => 'boolean',
     ];
@@ -105,13 +106,7 @@ class Funcionario extends Model
             'outros' => 'Outros'
         ];
 
-        $estadoCivil = $estadosCivis[$this->estado_civil] ?? 'Não informado';
-
-        if ($this->estado_civil === 'outros' && $this->outros_estado_texto) {
-            $estadoCivil .= " ({$this->outros_estado_texto})";
-        }
-
-        return $estadoCivil;
+        return $estadosCivis[$this->estado_civil];
     }
 
     // Método para formatar raça/cor
@@ -127,13 +122,7 @@ class Funcionario extends Model
             'outros' => 'Outros'
         ];
 
-        $racaCor = $racasCores[$this->raca_cor] ?? 'Não informado';
-
-        if ($this->raca_cor === 'outros' && $this->outros_raca_texto) {
-            $racaCor .= " ({$this->outros_raca_texto})";
-        }
-
-        return $racaCor;
+        return $racasCores[$this->raca_cor];
     }
 
     // Método para formatar escolaridade
@@ -170,11 +159,7 @@ class Funcionario extends Model
             '07' => 'Reabilitado'
         ];
 
-        $deficiencia = $deficiencias[$this->deficiencia] ?? 'Não informado';
-
-        if ($this->obs_deficiencia && $this->deficiencia !== '01') {
-            $deficiencia .= " ({$this->obs_deficiencia})";
-        }
+        $deficiencia = $deficiencias[$this->deficiencia];
 
         return $deficiencia;
     }
@@ -189,7 +174,7 @@ class Funcionario extends Model
             'ric' => 'RIC - Registro de Identidade Civil'
         ];
 
-        return $tiposDocumento[$this->tipo_documento] ?? 'Não informado';
+        return $tiposDocumento[$this->tipo_documento];
     }
 
     // Método para endereço completo

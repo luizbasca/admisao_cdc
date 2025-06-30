@@ -43,11 +43,14 @@ return new class extends Migration
             $table->string('pais_origem', 50)->nullable();
             $table->string('tipo_visto', 50)->nullable();
             $table->date('data_chegada_brasil')->nullable();
-            $table->boolean('casado_brasileiro')->default(false); // Alterado de enum para boolean
-            $table->boolean('filhos_brasileiros')->default(false); // Alterado nome e tipo
+            $table->boolean('casado_brasileiro')->default(false);
+            $table->boolean('filhos_brasileiros')->default(false);
 
             // Observações	
             $table->text('observacao')->nullable();
+
+            // Concordância com a LGPD
+            $table->boolean('concordancia_lgpd')->default(false);
 
             $table->timestamps();
         });

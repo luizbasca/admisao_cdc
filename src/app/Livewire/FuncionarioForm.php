@@ -16,9 +16,7 @@ class FuncionarioForm extends Component
         'pais_nascimento' => '',
         'genero' => '',
         'estado_civil' => '',
-        'outros_estado_texto' => '',
         'raca_cor' => '',
-        'outros_raca_texto' => '',
         'escolaridade' => '',
         'deficiencia' => '',
 
@@ -43,11 +41,14 @@ class FuncionarioForm extends Component
         'pais_origem' => '',
         'tipo_visto' => '',
         'data_chegada_brasil' => '',
-        'casado_brasileiro' => false,
-        'filhos_brasileiros' => false,
+        'casado_brasileiro' => '',
+        'filhos_brasileiros' => '',
 
         // Observações
         'observacao' => '',
+
+        // Concordância com a LGPD
+        'concordancia_lgpd' => false,
     ];
 
     public $dependentes = [];
@@ -151,9 +152,7 @@ class FuncionarioForm extends Component
         'funcionario.genero' => 'required|in:masculino,feminino',
         'funcionario.estado_civil' => 'required',
         'funcionario.pais_nascimento' => 'required|string',
-        'funcionario.outros_estado_texto' => 'required_if:funcionario.estado_civil,outros|max:50',
         'funcionario.raca_cor' => 'required',
-        'funcionario.outros_raca_texto' => 'required_if:funcionario.raca_cor,outros|max:50',
         'funcionario.escolaridade' => 'required',
         'funcionario.deficiencia' => 'required',
 
@@ -174,13 +173,20 @@ class FuncionarioForm extends Component
         'funcionario.pais_origem' => 'required_if:funcionario.eh_estrangeiro,true|max:50',
         'funcionario.tipo_visto' => 'required_if:funcionario.eh_estrangeiro,true|max:50',
         'funcionario.data_chegada_brasil' => 'required_if:funcionario.eh_estrangeiro,true|date',
+        'funcionario.casado_brasileiro' => 'required_if:funcionario.eh_estrangeiro,true|boolean',
+        'funcionario.filhos_brasileiros' => 'required_if:funcionario.eh_estrangeiro,true|boolean',
 
         // Dependentes
         'dependentes.*.nome_completo' => 'required|string|max:100',
         'dependentes.*.cpf' => 'required|cpf',
         'dependentes.*.data_nascimento' => 'required|date|before:today',
         'dependentes.*.tipo_dependencia' => 'required|string',
-        'dependentes.*.outros_especificar' => 'required_if:dependentes.*.tipo_dependencia,outros|max:100',
+
+        // Observação
+        'funcionario.observacao' => 'string',
+
+        // Concordância com a LGPD
+        'funcionario.concordancia_lgpd' => 'required|boolean',
     ];
 
 
@@ -198,11 +204,7 @@ class FuncionarioForm extends Component
         'funcionario.pais_nascimento.required' => 'O pais nascimento é obrigatório.',
         'funcionario.genero.in' => 'O gênero deve ser masculino ou feminino.',
         'funcionario.estado_civil.required' => 'O estado civil é obrigatório.',
-        'funcionario.outros_estado_texto.required_if' => 'Especifique o estado civil quando selecionar "Outros".',
-        'funcionario.outros_estado_texto.max' => 'A especificação do estado civil deve ter no máximo 50 caracteres.',
         'funcionario.raca_cor.required' => 'A raça/cor é obrigatória.',
-        'funcionario.outros_raca_texto.required_if' => 'Especifique a raça/cor quando selecionar "Outros".',
-        'funcionario.outros_raca_texto.max' => 'A especificação da raça/cor deve ter no máximo 50 caracteres.',
         'funcionario.escolaridade.required' => 'A escolaridade é obrigatória.',
         'funcionario.deficiencia.required' => 'A informação sobre deficiência é obrigatória.',
 
@@ -234,6 +236,8 @@ class FuncionarioForm extends Component
         'funcionario.tipo_visto.max' => 'O tipo de visto deve ter no máximo 50 caracteres.',
         'funcionario.data_chegada_brasil.required_if' => 'A data de chegada ao Brasil é obrigatória para funcionários estrangeiros.',
         'funcionario.data_chegada_brasil.date' => 'A data de chegada ao Brasil deve ser uma data válida.',
+        'funcionario.casado_brasileiro.required_if' => 'É obrigatório informar se é casado(a) com brasileiro(a) para funcionários estrangeiros.',
+        'funcionario.filhos_brasileiros.required_if' => 'É obrigatório informar se possui filhos brasileiros para funcionários estrangeiros.',
 
         // Dependentes
         'dependentes.*.nome_completo.required' => 'O nome completo do dependente é obrigatório.',
@@ -244,8 +248,9 @@ class FuncionarioForm extends Component
         'dependentes.*.data_nascimento.date' => 'A data de nascimento do dependente deve ser uma data válida.',
         'dependentes.*.data_nascimento.before' => 'A data de nascimento do dependente deve ser anterior a hoje.',
         'dependentes.*.tipo_dependencia.required' => 'O tipo de dependência é obrigatório.',
-        'dependentes.*.outros_especificar.required_if' => 'Especifique o tipo de dependência quando selecionar "Outros".',
-        'dependentes.*.outros_especificar.max' => 'A especificação do tipo de dependência deve ter no máximo 100 caracteres.',
+        'dependentes.*.dependente_ir.required' => 'É obrigatório informar se o dependente é para Imposto de Renda.',
+        'dependentes.*.dependente_salario_familia.required' => 'É obrigatório informar se o dependente é para Salário Família.',
+        'dependentes.*.dependente_plano_saude.required' => 'É obrigatório informar se o dependente é para Plano de Saúde.',
     ];
 
     public function mount($funcionarioId = null)
@@ -269,10 +274,9 @@ class FuncionarioForm extends Component
             'cpf' => '',
             'data_nascimento' => '',
             'tipo_dependencia' => '',
-            'outros_especificar' => '',
-            'dependente_ir' => false,
-            'dependente_salario_familia' => false,
-            'dependente_plano_saude' => false
+            'dependente_ir' => '',
+            'dependente_salario_familia' => '',
+            'dependente_plano_saude' => ''
         ];
     }
 
@@ -368,8 +372,8 @@ class FuncionarioForm extends Component
             $this->funcionario['pais_origem'] = '';
             $this->funcionario['tipo_visto'] = '';
             $this->funcionario['data_chegada_brasil'] = '';
-            $this->funcionario['casado_brasileiro'] = false;
-            $this->funcionario['filhos_brasileiros'] = false;
+            $this->funcionario['casado_brasileiro'] = '';
+            $this->funcionario['filhos_brasileiros'] = '';
         }
     }
 

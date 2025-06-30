@@ -5,17 +5,17 @@
     </div>
     <div class="card-body">
         <div class="form-group">
-            <label for="observacoes" class="form-label">
+            <label for="funcionario.observacao" class="form-label">
                 Observações Gerais
             </label>
             <textarea 
-                wire:model="observacoes" 
-                id="observacoes" 
-                class="form-control @error('observacoes') is-invalid @enderror" 
+                wire:model="funcionario.observacao" 
+                id="funcionario.observacao" 
+                class="form-control @error('funcionario.observacao') is-invalid @enderror" 
                 rows="4" 
                 placeholder="Inclua aqui informações adicionais que julgar relevantes."
             ></textarea>
-            @error('observacoes')
+            @error('observacao')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>

@@ -31,9 +31,7 @@ class FuncionarioController extends Controller
             'pais_nascimento' => 'required|string|max:50',
             'genero' => 'required|in:masculino,feminino',
             'estado_civil' => 'required|in:solteiro,casado,divorciado,viuvo,uniao_estavel,outros',
-            'outros_estado_texto' => 'required_if:estado_civil,outros|max:50',
             'raca_cor' => 'required|in:branco,negro,pardo,amarelo,indigena,nao_informado,outros',
-            'outros_raca_texto' => 'required_if:raca_cor,outros|max:50',
             'escolaridade' => 'required|in:01,02,03,04,05,06,07,08,09,10,12,13',
             'deficiencia' => 'required|in:01,02,03,04,05,06,07',
 
@@ -57,11 +55,9 @@ class FuncionarioController extends Controller
             'eh_estrangeiro' => 'boolean',
             'pais_origem' => 'required_if:eh_estrangeiro,true|max:50',
             'tipo_visto' => 'required_if:eh_estrangeiro,true|max:50',
-            'numero_visto' => 'required_if:eh_estrangeiro,true|max:50',
             'data_chegada_brasil' => 'required_if:eh_estrangeiro,true|date',
-            'classificacao_trabalhador' => 'required_if:eh_estrangeiro,true|max:100',
-            'casado_brasileiro' => 'boolean',
-            'filhos_brasileiros' => 'boolean',
+            'casado_brasileiro' => 'required_if:eh_estrangeiro,true|boolean',
+            'filhos_brasileiros' => 'required_if:eh_estrangeiro,true|boolean',
 
             // Dependentes - atualizando para incluir os novos campos
             'dependentes' => 'nullable|array|max:5',
@@ -69,14 +65,15 @@ class FuncionarioController extends Controller
             'dependentes.*.cpf' => 'nullable|cpf',
             'dependentes.*.data_nascimento' => 'required_with:dependentes|date|before:today',
             'dependentes.*.tipo_dependencia' => 'required_with:dependentes|in:filho_menor_21,filho_universitario,filho_deficiente,conjuge,companheiro,pais,outros',
-            'dependentes.*.outros_especificar' => 'required_if:dependentes.*.tipo_dependencia,outros|max:100',
-            'dependentes.*.dependente_ir' => 'boolean',
-            'dependentes.*.dependente_salario_familia' => 'boolean',
-            'dependentes.*.dependente_plano_saude' => 'boolean',
+            'dependentes.*.dependente_ir' => 'required_with:dependentes|boolean',
+            'dependentes.*.dependente_salario_familia' => 'required_with:dependentes|boolean',
+            'dependentes.*.dependente_plano_saude' => 'required_with:dependentes|boolean',
 
             // Observação
             'observacao' => 'nullable|string',
 
+            // Concordância com a LGPD
+            'concordancia_lgpd' => 'required|boolean',
         ]);
 
         try {
@@ -90,6 +87,7 @@ class FuncionarioController extends Controller
             $validated['eh_estrangeiro'] = $validated['eh_estrangeiro'] ?? false;
             $validated['casado_brasileiro'] = $validated['casado_brasileiro'] ?? false;
             $validated['filhos_brasileiros'] = $validated['filhos_brasileiros'] ?? false;
+            $validated['concordancia_lgpd'] = $validated['concordancia_lgpd'] ?? false;
 
             // Separar dados dos dependentes
             $dependentesData = $validated['dependentes'] ?? [];
@@ -163,9 +161,7 @@ class FuncionarioController extends Controller
             'pais_nascimento' => 'required|string|max:50',
             'genero' => 'required|in:masculino,feminino',
             'estado_civil' => 'required|in:solteiro,casado,divorciado,viuvo,uniao_estavel,outros',
-            'outros_estado_texto' => 'required_if:estado_civil,outros|max:50',
             'raca_cor' => 'required|in:branco,negro,pardo,amarelo,indigena,nao_informado,outros',
-            'outros_raca_texto' => 'required_if:raca_cor,outros|max:50',
             'escolaridade' => 'required|in:01,02,03,04,05,06,07,08,09,10,12,13',
             'deficiencia' => 'required|in:01,02,03,04,05,06,07',
 
@@ -189,11 +185,9 @@ class FuncionarioController extends Controller
             'eh_estrangeiro' => 'boolean',
             'pais_origem' => 'required_if:eh_estrangeiro,true|max:50',
             'tipo_visto' => 'required_if:eh_estrangeiro,true|max:50',
-            'numero_visto' => 'required_if:eh_estrangeiro,true|max:50',
             'data_chegada_brasil' => 'required_if:eh_estrangeiro,true|date',
-            'classificacao_trabalhador' => 'required_if:eh_estrangeiro,true|max:100',
-            'casado_brasileiro' => 'boolean',
-            'filhos_brasileiros' => 'boolean',
+            'casado_brasileiro' => 'required_if:eh_estrangeiro,true|boolean',
+            'filhos_brasileiros' => 'required_if:eh_estrangeiro,true|boolean',
 
             // Dependentes - incluindo os novos campos
             'dependentes' => 'nullable|array|max:5',
@@ -201,13 +195,15 @@ class FuncionarioController extends Controller
             'dependentes.*.cpf' => 'nullable|cpf',
             'dependentes.*.data_nascimento' => 'required_with:dependentes|date|before:today',
             'dependentes.*.tipo_dependencia' => 'required_with:dependentes|in:filho_menor_21,filho_universitario,filho_deficiente,conjuge,companheiro,pais,outros',
-            'dependentes.*.outros_especificar' => 'required_if:dependentes.*.tipo_dependencia,outros|max:100',
             'dependentes.*.dependente_ir' => 'boolean',
             'dependentes.*.dependente_salario_familia' => 'boolean',
             'dependentes.*.dependente_plano_saude' => 'boolean',
 
             // Observação
             'observacao' => 'nullable|string',
+
+            // Concordância com a LGPD
+            'funcionario.concordancia_lgpd' => 'required|boolean',
         ]);
 
         try {
@@ -221,6 +217,7 @@ class FuncionarioController extends Controller
             $validated['eh_estrangeiro'] = $validated['eh_estrangeiro'] ?? false;
             $validated['casado_brasileiro'] = $validated['casado_brasileiro'] ?? false;
             $validated['filhos_brasileiros'] = $validated['filhos_brasileiros'] ?? false;
+            $validated['concordancia_lgpd'] = $validated['concordancia_lgpd'] ?? false;
 
             // Separar dados dos dependentes
             $dependentesData = $validated['dependentes'] ?? [];
