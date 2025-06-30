@@ -1,4 +1,3 @@
-{{-- /srv/dev-disk-by-uuid-5f656e1d-a107-4bc4-8c71-f72f6511769d/CodigoFonte/producao/admisao_cdc/src/resources/views/livewire/funcionario/partials/raca-cor.blade.php --}}
 <div class="form-floating">
     <select class="form-select @error('funcionario.raca_cor') is-invalid @enderror" 
             wire:model="funcionario.raca_cor">

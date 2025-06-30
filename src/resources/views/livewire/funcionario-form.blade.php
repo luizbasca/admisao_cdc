@@ -1,8 +1,7 @@
 <div>
     {{-- Mensagens de Feedback --}}
     @include('livewire.partials.messages')
-
-    <form wire:submit.prevent="salvar">
+    
     {{-- Dados do Funcionário --}}
     @include('livewire.funcionario.dados-pessoais')
     

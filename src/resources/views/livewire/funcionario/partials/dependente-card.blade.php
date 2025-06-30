@@ -1,4 +1,3 @@
-{{-- /srv/dev-disk-by-uuid-5f656e1d-a107-4bc4-8c71-f72f6511769d/CodigoFonte/producao/admisao_cdc/src/resources/views/livewire/funcionario/partials/dependente-card.blade.php --}}
 <div class="card mb-3 border-start border-primary border-3">
     <div class="card-header d-flex justify-content-between align-items-center bg-light">
         <h6 class="mb-0">
@@ -72,7 +71,6 @@
                     @enderror
                 </div>
             </div>
-
         </div>
 
         {{-- Seção de Informações Adicionais --}}
@@ -85,92 +83,50 @@
             <div class="row g-3">
                 {{-- Dependente para Imposto de Renda --}}
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold small">Dependente para Imposto de Renda? *</label>
-                    <div class="d-flex gap-3 mt-2">
-                        <div class="form-check">
-                            <input class="form-check-input @error('dependentes.'.$index.'.dependente_ir') is-invalid @enderror" 
-                                   type="radio" 
-                                   wire:model="dependentes.{{ $index }}.dependente_ir" 
-                                   value="1"
-                                   id="dependente_ir_sim_{{ $index }}">
-                            <label class="form-check-label" for="dependente_ir_sim_{{ $index }}">
-                                Sim
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input @error('dependentes.'.$index.'.dependente_ir') is-invalid @enderror" 
-                                   type="radio" 
-                                   wire:model="dependentes.{{ $index }}.dependente_ir" 
-                                   value="0"
-                                   id="dependente_ir_nao_{{ $index }}">
-                            <label class="form-check-label" for="dependente_ir_nao_{{ $index }}">
-                                Não
-                            </label>
-                        </div>
+                    <div class="form-floating">
+                        <select class="form-select @error('dependentes.'.$index.'.dependente_ir') is-invalid @enderror" 
+                                wire:model="dependentes.{{ $index }}.dependente_ir">
+                            <option value="">Selecione...</option>
+                            <option value="1">Sim</option>
+                            <option value="0">Não</option>
+                        </select>
+                        <label>Dependente para Imposto de Renda *</label>
+                        @error('dependentes.'.$index.'.dependente_ir')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
-                    @error('dependentes.'.$index.'.dependente_ir')
-                        <div class="text-danger small mt-1">{{ $message }}</div>
-                    @enderror
                 </div>
 
                 {{-- Dependente para Salário Família --}}
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold small">Dependente para Salário Família? *</label>
-                    <div class="d-flex gap-3 mt-2">
-                        <div class="form-check">
-                            <input class="form-check-input @error('dependentes.'.$index.'.dependente_salario_familia') is-invalid @enderror" 
-                                   type="radio" 
-                                   wire:model="dependentes.{{ $index }}.dependente_salario_familia" 
-                                   value="1"
-                                   id="dependente_salario_sim_{{ $index }}">
-                            <label class="form-check-label" for="dependente_salario_sim_{{ $index }}">
-                                Sim
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input @error('dependentes.'.$index.'.dependente_salario_familia') is-invalid @enderror" 
-                                   type="radio" 
-                                   wire:model="dependentes.{{ $index }}.dependente_salario_familia" 
-                                   value="0"
-                                   id="dependente_salario_nao_{{ $index }}">
-                            <label class="form-check-label" for="dependente_salario_nao_{{ $index }}">
-                                Não
-                            </label>
-                        </div>
+                    <div class="form-floating">
+                        <select class="form-select @error('dependentes.'.$index.'.dependente_salario_familia') is-invalid @enderror" 
+                                wire:model="dependentes.{{ $index }}.dependente_salario_familia">
+                            <option value="">Selecione...</option>
+                            <option value="1">Sim</option>
+                            <option value="0">Não</option>
+                        </select>
+                        <label>Dependente para Salário Família *</label>
+                        @error('dependentes.'.$index.'.dependente_salario_familia')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
-                    @error('dependentes.'.$index.'.dependente_salario_familia')
-                        <div class="text-danger small mt-1">{{ $message }}</div>
-                    @enderror
                 </div>
 
                 {{-- Dependente para Plano de Saúde --}}
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold small">Dependente para Plano de Saúde? *</label>
-                    <div class="d-flex gap-3 mt-2">
-                        <div class="form-check">
-                            <input class="form-check-input @error('dependentes.'.$index.'.dependente_plano_saude') is-invalid @enderror" 
-                                   type="radio" 
-                                   wire:model="dependentes.{{ $index }}.dependente_plano_saude" 
-                                   value="1"
-                                   id="dependente_plano_sim_{{ $index }}">
-                            <label class="form-check-label" for="dependente_plano_sim_{{ $index }}">
-                                Sim
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input @error('dependentes.'.$index.'.dependente_plano_saude') is-invalid @enderror" 
-                                   type="radio" 
-                                   wire:model="dependentes.{{ $index }}.dependente_plano_saude" 
-                                   value="0"
-                                   id="dependente_plano_nao_{{ $index }}">
-                            <label class="form-check-label" for="dependente_plano_nao_{{ $index }}">
-                                Não
-                            </label>
-                        </div>
+                    <div class="form-floating">
+                        <select class="form-select @error('dependentes.'.$index.'.dependente_plano_saude') is-invalid @enderror" 
+                                wire:model="dependentes.{{ $index }}.dependente_plano_saude">
+                            <option value="">Selecione...</option>
+                            <option value="1">Sim</option>
+                            <option value="0">Não</option>
+                        </select>
+                        <label>Dependente para Plano de Saúde *</label>
+                        @error('dependentes.'.$index.'.dependente_plano_saude')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
-                    @error('dependentes.'.$index.'.dependente_plano_saude')
-                        <div class="text-danger small mt-1">{{ $message }}</div>
-                    @enderror
                 </div>
             </div>
         </div>
