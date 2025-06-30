@@ -20,6 +20,9 @@
     {{-- Observações --}}
     @include('livewire.funcionario.observacao')
 
+    {{-- Declarações e Concordâncias --}}
+    @include('livewire.funcionario.concordancias')
+
     {{-- Botões de Ação --}}
     @include('livewire.partials.form-actions')
 </div>
