@@ -247,12 +247,6 @@
                 <div class="info-value">{{ $funcionario->data_validade->format('d/m/Y') }}</div>
             </div>
             @endif
-            @if($funcionario->info_adicionais)
-            <div class="info-row">
-                <div class="info-label">Informações Adicionais:</div>
-                <div class="info-value">{{ $funcionario->info_adicionais }}</div>
-            </div>
-            @endif
         </div>
     </div>
 

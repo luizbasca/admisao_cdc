@@ -43,7 +43,6 @@ class FuncionarioController extends Controller
             'orgao_emissor' => 'required|string|max:20',
             'data_emissao' => 'nullable|date',
             'data_validade' => 'nullable|date',
-            'info_adicionais' => 'nullable|string|max:255',
 
             // Endereço - Obrigatórios
             'cep' => 'required|string|size:9',
@@ -64,13 +63,20 @@ class FuncionarioController extends Controller
             'casado_brasileiro' => 'boolean',
             'filhos_brasileiros' => 'boolean',
 
-            // Dependentes
+            // Dependentes - atualizando para incluir os novos campos
             'dependentes' => 'nullable|array|max:5',
             'dependentes.*.nome_completo' => 'required_with:dependentes|string|max:100',
             'dependentes.*.cpf' => 'nullable|cpf',
             'dependentes.*.data_nascimento' => 'required_with:dependentes|date|before:today',
             'dependentes.*.tipo_dependencia' => 'required_with:dependentes|in:filho_menor_21,filho_universitario,filho_deficiente,conjuge,companheiro,pais,outros',
             'dependentes.*.outros_especificar' => 'required_if:dependentes.*.tipo_dependencia,outros|max:100',
+            'dependentes.*.dependente_ir' => 'boolean',
+            'dependentes.*.dependente_salario_familia' => 'boolean',
+            'dependentes.*.dependente_plano_saude' => 'boolean',
+
+            // Observação
+            'observacao' => 'nullable|string',
+
         ]);
 
         try {
@@ -103,6 +109,11 @@ class FuncionarioController extends Controller
                 if (!empty($dependente['cpf'])) {
                     $dependente['cpf'] = preg_replace('/[^0-9]/', '', $dependente['cpf']);
                 }
+
+                // Garantir valores padrão para campos booleanos dos dependentes
+                $dependente['dependente_ir'] = $dependente['dependente_ir'] ?? false;
+                $dependente['dependente_salario_familia'] = $dependente['dependente_salario_familia'] ?? false;
+                $dependente['dependente_plano_saude'] = $dependente['dependente_plano_saude'] ?? false;
 
                 // Remove campos vazios opcionais
                 $dadosDependente = array_filter($dependente, function ($value) {
@@ -164,7 +175,6 @@ class FuncionarioController extends Controller
             'orgao_emissor' => 'required|string|max:20',
             'data_emissao' => 'nullable|date',
             'data_validade' => 'nullable|date',
-            'info_adicionais' => 'nullable|string|max:255',
 
             // Endereço
             'cep' => 'required|string|size:9',
@@ -185,13 +195,19 @@ class FuncionarioController extends Controller
             'casado_brasileiro' => 'boolean',
             'filhos_brasileiros' => 'boolean',
 
-            // Dependentes
+            // Dependentes - incluindo os novos campos
             'dependentes' => 'nullable|array|max:5',
             'dependentes.*.nome_completo' => 'required_with:dependentes|string|max:100',
             'dependentes.*.cpf' => 'nullable|cpf',
             'dependentes.*.data_nascimento' => 'required_with:dependentes|date|before:today',
             'dependentes.*.tipo_dependencia' => 'required_with:dependentes|in:filho_menor_21,filho_universitario,filho_deficiente,conjuge,companheiro,pais,outros',
             'dependentes.*.outros_especificar' => 'required_if:dependentes.*.tipo_dependencia,outros|max:100',
+            'dependentes.*.dependente_ir' => 'boolean',
+            'dependentes.*.dependente_salario_familia' => 'boolean',
+            'dependentes.*.dependente_plano_saude' => 'boolean',
+
+            // Observação
+            'observacao' => 'nullable|string',
         ]);
 
         try {
@@ -226,6 +242,11 @@ class FuncionarioController extends Controller
                 if (!empty($dependente['cpf'])) {
                     $dependente['cpf'] = preg_replace('/[^0-9]/', '', $dependente['cpf']);
                 }
+
+                // Garantir valores padrão para campos booleanos dos dependentes
+                $dependente['dependente_ir'] = $dependente['dependente_ir'] ?? false;
+                $dependente['dependente_salario_familia'] = $dependente['dependente_salario_familia'] ?? false;
+                $dependente['dependente_plano_saude'] = $dependente['dependente_plano_saude'] ?? false;
 
                 $dadosDependente = array_filter($dependente, function ($value) {
                     return $value !== '' && $value !== null;

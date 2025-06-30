@@ -18,9 +18,7 @@ return new class extends Migration
             $table->string('pais_nascimento');
             $table->enum('genero', ['masculino', 'feminino']);
             $table->enum('estado_civil', ['solteiro', 'casado', 'divorciado', 'viuvo', 'uniao_estavel', 'outros']);
-            $table->string('outros_estado_texto', 50)->nullable();
             $table->enum('raca_cor', ['branco', 'negro', 'pardo', 'amarelo', 'indigena', 'nao_informado', 'outros']);
-            $table->string('outros_raca_texto', 50)->nullable();
             $table->string('escolaridade', 2);
             $table->string('deficiencia', 2);
 
@@ -30,7 +28,6 @@ return new class extends Migration
             $table->string('orgao_emissor', 20);
             $table->date('data_emissao')->nullable();
             $table->date('data_validade')->nullable();
-            $table->text('info_adicionais')->nullable();
 
             // Endereço
             $table->string('cep', 9);
@@ -49,6 +46,8 @@ return new class extends Migration
             $table->boolean('casado_brasileiro')->default(false); // Alterado de enum para boolean
             $table->boolean('filhos_brasileiros')->default(false); // Alterado nome e tipo
 
+            // Observações	
+            $table->text('observacao')->nullable();
 
             $table->timestamps();
         });

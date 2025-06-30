@@ -10,16 +10,17 @@
                 <div class="form-floating">
                     <input type="text" 
                         class="form-control @error('funcionario.cep') is-invalid @enderror" 
-                        wire:model="funcionario.cep" 
+                        wire:model.live="funcionario.cep" 
                         x-mask="99999-999" 
-                        placeholder="00000-000">
+                        placeholder="00000-000"
+                        maxlength="9">
                     <label>CEP *</label>
                     @error('funcionario.cep') 
                         <div class="invalid-feedback">{{ $message }}</div> 
                     @enderror
                 </div>
             </div>
-            
+
             {{-- Logradouro --}}
             <div class="col-md-6">
                 <div class="form-floating">
@@ -94,3 +95,16 @@
         </div>
     </div>
 </div>
+
+{{-- Script para melhorar a experiência do usuário --}}
+<script>
+document.addEventListener('livewire:initialized', () => {
+    // Escuta o evento de CEP encontrado
+    Livewire.on('cep-encontrado', () => {
+        // Foca no campo número após preencher o endereço
+        setTimeout(() => {
+            document.querySelector('input[wire\\:model="funcionario.numero"]')?.focus();
+        }, 100);
+    });
+});
+</script>

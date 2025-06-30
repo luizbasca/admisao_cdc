@@ -7,8 +7,4 @@
     <p class="text-muted mb-4">
         Clique no botão "Adicionar" para incluir dependentes.
     </p>
-    <div class="alert alert-info" role="alert">
-        <i class="bi bi-lightbulb me-2"></i>
-        <strong>Dica:</strong> Dependentes são importantes para cálculos de Imposto de Renda e benefícios.
-    </div>
 </div>

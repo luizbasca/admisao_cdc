@@ -63,17 +63,6 @@
                     @enderror
                 </div>
             </div>
-
-            {{-- Informações Adicionais --}}
-            <div class="col-12">
-                <div class="form-floating">
-                    <textarea class="form-control" 
-                              wire:model="funcionario.info_adicionais" 
-                              style="height: 100px" 
-                              placeholder="Informações"></textarea>
-                    <label>Informações Adicionais</label>
-                </div>
-            </div>
         </div>
     </div>
 </div>

@@ -104,6 +104,8 @@ npm-watch:
 npm-clean:
 	docker compose exec app rm -rf node_modules package-lock.json
 	@make npm-install
+livewire-publish:
+	docker compose exec app php artisan livewire:publish --config
 frontend-dev:
 	docker compose exec app concurrently "php artisan serve" "npm run dev"
 assets-build:

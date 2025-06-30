@@ -28,7 +28,6 @@ class FuncionarioForm extends Component
         'orgao_emissor' => '',
         'data_emissao' => '',
         'data_validade' => '',
-        'info_adicionais' => '',
 
         // Endereço
         'cep' => '',
@@ -46,6 +45,9 @@ class FuncionarioForm extends Component
         'data_chegada_brasil' => '',
         'casado_brasileiro' => false,
         'filhos_brasileiros' => false,
+
+        // Observações
+        'observacao' => '',
     ];
 
     public $dependentes = [];
@@ -267,7 +269,10 @@ class FuncionarioForm extends Component
             'cpf' => '',
             'data_nascimento' => '',
             'tipo_dependencia' => '',
-            'outros_especificar' => ''
+            'outros_especificar' => '',
+            'dependente_ir' => false,
+            'dependente_salario_familia' => false,
+            'dependente_plano_saude' => false
         ];
     }
 
@@ -278,6 +283,7 @@ class FuncionarioForm extends Component
 
         session()->flash('success', 'Dependente removido com sucesso.');
     }
+
 
     public function updatedFuncionarioCep()
     {
@@ -292,23 +298,66 @@ class FuncionarioForm extends Component
     {
         $cep = preg_replace('/\D/', '', $this->funcionario['cep']);
 
+        if (strlen($cep) != 8) {
+            session()->flash('error', 'CEP deve ter 8 dígitos.');
+            return;
+        }
+
         try {
-            $response = file_get_contents("https://viacep.com.br/ws/{$cep}/json/");
+            // Usando cURL para melhor controle da requisição
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, "https://viacep.com.br/ws/{$cep}/json/");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            if ($httpCode !== 200) {
+                throw new \Exception('Erro na consulta do CEP');
+            }
+
             $data = json_decode($response, true);
 
             if (!isset($data['erro'])) {
+                // Preenche os campos automaticamente
                 $this->funcionario['rua'] = $data['logradouro'] ?? '';
                 $this->funcionario['bairro'] = $data['bairro'] ?? '';
                 $this->funcionario['cidade'] = $data['localidade'] ?? '';
                 $this->funcionario['estado'] = $data['uf'] ?? '';
 
+                // Formata o CEP com hífen se não estiver formatado
+                $this->funcionario['cep'] = substr($cep, 0, 5) . '-' . substr($cep, 5);
+
                 session()->flash('success', 'Endereço preenchido automaticamente.');
+
+                // Dispara evento para atualizar a interface
+                $this->dispatch('cep-encontrado');
             } else {
                 session()->flash('error', 'CEP não encontrado.');
+                $this->limparCamposEndereco();
             }
         } catch (\Exception $e) {
-            session()->flash('error', 'Erro ao buscar CEP. Verifique sua conexão.');
+            session()->flash('error', 'Erro ao buscar CEP. Verifique sua conexão com a internet.');
+            \Log::error('Erro ao buscar CEP: ' . $e->getMessage());
         }
+    }
+
+    // Método auxiliar para limpar campos quando CEP não é encontrado
+    private function limparCamposEndereco()
+    {
+        $this->funcionario['rua'] = '';
+        $this->funcionario['bairro'] = '';
+        $this->funcionario['cidade'] = '';
+        $this->funcionario['estado'] = '';
+    }
+
+    // Método para buscar CEP manualmente (botão)
+    public function buscarCepManual()
+    {
+        $this->buscarCep();
     }
 
     // Manter o método existente também

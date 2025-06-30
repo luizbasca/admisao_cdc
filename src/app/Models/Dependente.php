@@ -1,5 +1,4 @@
 <?php
-// app/Models/Dependente.php
 
 namespace App\Models;
 
@@ -16,11 +15,17 @@ class Dependente extends Model
         'cpf',
         'data_nascimento',
         'tipo_dependencia',
-        'outros_dependencia'
+        'outros_dependencia',
+        'dependente_ir',
+        'dependente_salario_familia',
+        'dependente_plano_saude'
     ];
 
     protected $casts = [
         'data_nascimento' => 'date',
+        'dependente_ir' => 'boolean',
+        'dependente_salario_familia' => 'boolean',
+        'dependente_plano_saude' => 'boolean',
     ];
 
     public function funcionario()
@@ -89,5 +94,21 @@ class Dependente extends Model
             default:
                 return true; // Para outros tipos, não verificamos idade
         }
+    }
+
+    // Métodos para formatar as respostas das perguntas
+    public function getDependenteIrFormatado(): string
+    {
+        return $this->dependente_ir ? 'Sim' : 'Não';
+    }
+
+    public function getDependenteSalarioFamiliaFormatado(): string
+    {
+        return $this->dependente_salario_familia ? 'Sim' : 'Não';
+    }
+
+    public function getDependentePlanoSaudeFormatado(): string
+    {
+        return $this->dependente_plano_saude ? 'Sim' : 'Não';
     }
 }

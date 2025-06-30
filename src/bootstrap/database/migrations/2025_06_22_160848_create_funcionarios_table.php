@@ -29,7 +29,6 @@ return new class extends Migration
             $table->string('orgao_emissor');
             $table->date('data_emissao')->nullable();
             $table->date('data_validade')->nullable();
-            $table->text('info_adicionais')->nullable();
 
             // Endereço
             $table->string('rua');
@@ -45,6 +44,10 @@ return new class extends Migration
             $table->date('data_naturalizacao')->nullable();
             $table->enum('casado_brasileiro', ['sim', 'nao'])->nullable();
             $table->enum('filho_brasileiro', ['sim', 'nao'])->nullable();
+
+            // Observação
+            $table->text('observacao')->nullable();
+
 
             $table->timestamps();
         });

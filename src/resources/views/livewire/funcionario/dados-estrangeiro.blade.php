@@ -16,10 +16,6 @@
 
     @if($funcionario['eh_estrangeiro'] ?? false)
     <div class="card-body">
-        <div class="alert alert-warning" role="alert">
-            <i class="bi bi-exclamation-triangle me-2"></i>
-            <strong>Atenção:</strong> Preencha todos os campos obrigatórios para funcionários estrangeiros.
-        </div>
 
         <div class="row g-3">
             {{-- País de Origem --}}
@@ -56,7 +52,7 @@
             </div>
 
             {{-- Data de Chegada no Brasil --}}
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-floating">
                     <input type="date"
                         class="form-control @error('funcionario.data_chegada_brasil') is-invalid @enderror"
@@ -68,43 +64,38 @@
                 </div>
             </div>
 
-            {{-- Informações Adicionais --}}
-            <div class="col-12">
-                <h6 class="border-bottom pb-2 mb-3">Informações Familiares</h6>
-                <div class="row g-3">
-                    {{-- Casado com Brasileiro --}}
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <select class="form-select @error('funcionario.casado_brasileiro') is-invalid @enderror"
-                                wire:model.live="funcionario.casado_brasileiro">
-                                <option value="">Selecione...</option>
-                                <option value="1">Sim</option>
-                                <option value="0">Não</option>
-                            </select>
-                            <label>Casado(a) com brasileiro(a) *</label>
-                            @error('funcionario.casado_brasileiro')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    {{-- Filhos Brasileiros --}}
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <select class="form-select @error('funcionario.filhos_brasileiros') is-invalid @enderror"
-                                wire:model.live="funcionario.filhos_brasileiros">
-                                <option value="">Selecione...</option>
-                                <option value="1">Sim</option>
-                                <option value="0">Não</option>
-                            </select>
-                            <label>Possui filhos brasileiros *</label>
-                            @error('funcionario.filhos_brasileiros')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
+            {{-- Casado com Brasileiro --}}
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select @error('funcionario.casado_brasileiro') is-invalid @enderror"
+                        wire:model.live="funcionario.casado_brasileiro">
+                        <option value="">Selecione...</option>
+                        <option value="1">Sim</option>
+                        <option value="0">Não</option>
+                    </select>
+                    <label>Casado(a) com brasileiro(a) *</label>
+                    @error('funcionario.casado_brasileiro')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
+
+            {{-- Filhos Brasileiros --}}
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select @error('funcionario.filhos_brasileiros') is-invalid @enderror"
+                        wire:model.live="funcionario.filhos_brasileiros">
+                        <option value="">Selecione...</option>
+                        <option value="1">Sim</option>
+                        <option value="0">Não</option>
+                    </select>
+                    <label>Possui filhos brasileiros *</label>
+                    @error('funcionario.filhos_brasileiros')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
         </div>
     </div>
     @else

@@ -17,8 +17,6 @@
 </head>
 
 <body>
-    @include('partials.progress-indicator')
-    @include('partials.navbar')
 
     <!-- Main Content -->
     <main class="container my-4">

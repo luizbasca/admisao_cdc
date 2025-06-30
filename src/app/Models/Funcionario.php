@@ -1,5 +1,4 @@
 <?php
-// app/Models/Funcionario.php
 
 namespace App\Models;
 
@@ -30,7 +29,6 @@ class Funcionario extends Model
         'orgao_emissor',
         'data_emissao',
         'data_validade',
-        'info_adicionais',
 
         // Endereço
         'cep',
@@ -48,6 +46,9 @@ class Funcionario extends Model
         'data_chegada_brasil',
         'casado_brasileiro',
         'filhos_brasileiros',
+
+        // Observação
+        'observacao',
     ];
 
     protected $casts = [
