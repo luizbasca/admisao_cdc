@@ -28,7 +28,7 @@
             </div>
 
             {{-- CPF --}}
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-floating">
                     <input type="text" 
                            class="form-control @error('dependentes.'.$index.'.cpf') is-invalid @enderror" 
@@ -43,7 +43,7 @@
             </div>
 
             {{-- Data de Nascimento --}}
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-floating">
                     <input type="date" 
                            class="form-control @error('dependentes.'.$index.'.data_nascimento') is-invalid @enderror" 
@@ -56,7 +56,7 @@
             </div>
 
             {{-- Tipo de Dependência --}}
-            <div class="col-md-8">
+            <div class="col-md-4">
                 <div class="form-floating">
                     <select class="form-select @error('dependentes.'.$index.'.tipo_dependencia') is-invalid @enderror" 
                             wire:model="dependentes.{{ $index }}.tipo_dependencia">
@@ -71,62 +71,52 @@
                     @enderror
                 </div>
             </div>
-        </div>
 
-        {{-- Seção de Informações Adicionais --}}
-        <div class="mt-4 pt-3 border-top">
-            <h6 class="mb-3 text-primary">
-                <i class="bi bi-info-circle me-2"></i>
-                Informações Adicionais
-            </h6>
-            
-            <div class="row g-3">
-                {{-- Dependente para Imposto de Renda --}}
-                <div class="col-md-4">
-                    <div class="form-floating">
-                        <select class="form-select @error('dependentes.'.$index.'.dependente_ir') is-invalid @enderror" 
-                                wire:model="dependentes.{{ $index }}.dependente_ir">
-                            <option value="">Selecione...</option>
-                            <option value="1">Sim</option>
-                            <option value="0">Não</option>
-                        </select>
-                        <label>Dependente para Imposto de Renda *</label>
-                        @error('dependentes.'.$index.'.dependente_ir')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+            {{-- Dependente para Imposto de Renda --}}
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select @error('dependentes.'.$index.'.dependente_ir') is-invalid @enderror" 
+                            wire:model="dependentes.{{ $index }}.dependente_ir">
+                        <option value="">Selecione...</option>
+                        <option value="1">Sim</option>
+                        <option value="0">Não</option>
+                    </select>
+                    <label>Dependente para Imposto de Renda *</label>
+                    @error('dependentes.'.$index.'.dependente_ir')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
+            </div>
 
-                {{-- Dependente para Salário Família --}}
-                <div class="col-md-4">
-                    <div class="form-floating">
-                        <select class="form-select @error('dependentes.'.$index.'.dependente_salario_familia') is-invalid @enderror" 
-                                wire:model="dependentes.{{ $index }}.dependente_salario_familia">
-                            <option value="">Selecione...</option>
-                            <option value="1">Sim</option>
-                            <option value="0">Não</option>
-                        </select>
-                        <label>Dependente para Salário Família *</label>
-                        @error('dependentes.'.$index.'.dependente_salario_familia')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+            {{-- Dependente para Salário Família --}}
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select @error('dependentes.'.$index.'.dependente_salario_familia') is-invalid @enderror" 
+                            wire:model="dependentes.{{ $index }}.dependente_salario_familia">
+                        <option value="">Selecione...</option>
+                        <option value="1">Sim</option>
+                        <option value="0">Não</option>
+                    </select>
+                    <label>Dependente para Salário Família *</label>
+                    @error('dependentes.'.$index.'.dependente_salario_familia')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
+            </div>
 
-                {{-- Dependente para Plano de Saúde --}}
-                <div class="col-md-4">
-                    <div class="form-floating">
-                        <select class="form-select @error('dependentes.'.$index.'.dependente_plano_saude') is-invalid @enderror" 
-                                wire:model="dependentes.{{ $index }}.dependente_plano_saude">
-                            <option value="">Selecione...</option>
-                            <option value="1">Sim</option>
-                            <option value="0">Não</option>
-                        </select>
-                        <label>Dependente para Plano de Saúde *</label>
-                        @error('dependentes.'.$index.'.dependente_plano_saude')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+            {{-- Dependente para Plano de Saúde --}}
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select @error('dependentes.'.$index.'.dependente_plano_saude') is-invalid @enderror" 
+                            wire:model="dependentes.{{ $index }}.dependente_plano_saude">
+                        <option value="">Selecione...</option>
+                        <option value="1">Sim</option>
+                        <option value="0">Não</option>
+                    </select>
+                    <label>Dependente para Plano de Saúde *</label>
+                    @error('dependentes.'.$index.'.dependente_plano_saude')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
         </div>
