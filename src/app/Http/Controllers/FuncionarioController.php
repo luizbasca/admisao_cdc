@@ -26,12 +26,12 @@ class FuncionarioController extends Controller
         $validated = $request->validate([
             // Dados Pessoais - Obrigatórios
             'nome' => 'required|string|max:100',
-            'cpf' => 'required|cpf|unique:funcionarios,cpf',
+            'cpf' => 'required|cpf',
             'data_nascimento' => 'required|date|before:today',
             'pais_nascimento' => 'required|string|max:50',
             'genero' => 'required|in:masculino,feminino',
-            'estado_civil' => 'required|in:solteiro,casado,divorciado,viuvo,uniao_estavel,outros',
-            'raca_cor' => 'required|in:branco,negro,pardo,amarelo,indigena,nao_informado,outros',
+            'estado_civil' => 'required|in:solteiro,casado,divorciado,viuvo,uniao_estavel',
+            'raca_cor' => 'required|in:branco,negro,pardo,amarelo,indigena,nao_informado',
             'escolaridade' => 'required|in:01,02,03,04,05,06,07,08,09,10,12,13',
             'deficiencia' => 'required|in:01,02,03,04,05,06,07',
 
@@ -156,12 +156,12 @@ class FuncionarioController extends Controller
         $validated = $request->validate([
             // Mesmas validações do store, mas sem unique no CPF se for o mesmo funcionário
             'nome' => 'required|string|max:100',
-            'cpf' => 'required|cpf|unique:funcionarios,cpf,' . $funcionario->id,
+            'cpf' => 'required|cpf|',
             'data_nascimento' => 'required|date|before:today',
             'pais_nascimento' => 'required|string|max:50',
             'genero' => 'required|in:masculino,feminino',
-            'estado_civil' => 'required|in:solteiro,casado,divorciado,viuvo,uniao_estavel,outros',
-            'raca_cor' => 'required|in:branco,negro,pardo,amarelo,indigena,nao_informado,outros',
+            'estado_civil' => 'required|in:solteiro,casado,divorciado,viuvo,uniao_estavel',
+            'raca_cor' => 'required|in:branco,negro,pardo,amarelo,indigena,nao_informado',
             'escolaridade' => 'required|in:01,02,03,04,05,06,07,08,09,10,12,13',
             'deficiencia' => 'required|in:01,02,03,04,05,06,07',
 

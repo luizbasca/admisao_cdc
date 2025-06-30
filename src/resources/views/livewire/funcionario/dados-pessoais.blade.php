@@ -51,11 +51,12 @@
             <div class="col-md-6">
                 <div class="form-floating">
                     <input type="text" 
-                           class="form-control" 
-                           wire:model="funcionario.pais_nascimento" 
-                           placeholder="País" 
-                           value="Brasil">
-                    <label>País de nascimento</label>
+                            class="form-control @error('funcionario.pais_nascimento') is-invalid @enderror" 
+                            wire:model="funcionario.pais_nascimento">
+                    <label>País de nascimento *</label>
+                    @error('funcionario.pais_nascimento') 
+                        <div class="invalid-feedback">{{ $message }}</div> 
+                    @enderror
                 </div>
             </div>
 

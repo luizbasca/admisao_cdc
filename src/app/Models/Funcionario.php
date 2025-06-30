@@ -103,7 +103,6 @@ class Funcionario extends Model
             'divorciado' => 'Divorciado',
             'viuvo' => 'Viúvo',
             'uniao_estavel' => 'União Estável',
-            'outros' => 'Outros'
         ];
 
         return $estadosCivis[$this->estado_civil];
@@ -119,7 +118,6 @@ class Funcionario extends Model
             'amarelo' => 'Amarelo',
             'indigena' => 'Indígena',
             'nao_informado' => 'Não informado',
-            'outros' => 'Outros'
         ];
 
         return $racasCores[$this->raca_cor];
