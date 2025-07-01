@@ -1,6 +1,6 @@
 <div class="form-floating">
     <select class="form-select @error('funcionario.deficiencia') is-invalid @enderror" 
-            wire:model="funcionario.deficiencia">
+            wire:model.live.debounce.500ms="funcionario.deficiencia">
         <option value="">Selecione...</option>
         @foreach($this->tiposDeficiencia as $key => $value)
             <option value="{{ $key }}">{{ $value }}</option>

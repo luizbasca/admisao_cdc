@@ -70,7 +70,7 @@
                     <div class="form-check">
                         <input class="form-check-input @error('funcionario.concordancia_lgpd') is-invalid @enderror" 
                                type="checkbox" 
-                               wire:model="funcionario.concordancia_lgpd" 
+                               wire:model.live.debounce.500ms="funcionario.concordancia_lgpd" 
                                id="funcionario.concordancia_lgpd">
                         <label class="form-check-label fw-bold" for="funcionario.concordancia_lgpd">
                             Li e concordo com termos.

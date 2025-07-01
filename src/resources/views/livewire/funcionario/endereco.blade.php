@@ -26,7 +26,7 @@
                 <div class="form-floating">
                     <input type="text" 
                            class="form-control @error('funcionario.rua') is-invalid @enderror" 
-                           wire:model="funcionario.rua" 
+                           wire:model.live.debounce.500ms="funcionario.rua" 
                            placeholder="Nome da rua">
                     <label>Logradouro *</label>
                     @error('funcionario.rua') 
@@ -40,7 +40,7 @@
                 <div class="form-floating">
                     <input type="text" 
                            class="form-control @error('funcionario.numero') is-invalid @enderror" 
-                           wire:model="funcionario.numero" 
+                           wire:model.live.debounce.500ms="funcionario.numero" 
                            placeholder="123">
                     <label>Número *</label>
                     @error('funcionario.numero') 
@@ -54,7 +54,7 @@
                 <div class="form-floating">
                     <input type="text" 
                            class="form-control" 
-                           wire:model="funcionario.complemento" 
+                           wire:model.live.debounce.500ms="funcionario.complemento" 
                            placeholder="Complemento">
                     <label>Complemento</label>
                 </div>
@@ -65,7 +65,7 @@
                 <div class="form-floating">
                     <input type="text" 
                            class="form-control @error('funcionario.bairro') is-invalid @enderror" 
-                           wire:model="funcionario.bairro" 
+                           wire:model.live.debounce.500ms="funcionario.bairro" 
                            placeholder="Bairro">
                     <label>Bairro *</label>
                     @error('funcionario.bairro') 
@@ -79,7 +79,7 @@
                 <div class="form-floating">
                     <input type="text" 
                            class="form-control @error('funcionario.cidade') is-invalid @enderror" 
-                           wire:model="funcionario.cidade" 
+                           wire:model.live.debounce.500ms="funcionario.cidade" 
                            placeholder="Cidade">
                     <label>Cidade *</label>
                     @error('funcionario.cidade') 

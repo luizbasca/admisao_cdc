@@ -18,6 +18,9 @@
         {{-- Dependentes --}}
         @include('livewire.funcionario.dependentes')
 
+        {{-- Vínculo Empregatício --}}
+        @include('livewire.funcionario.dados-vinculo-empregaticio')
+
         {{-- Observações --}}
         @include('livewire.funcionario.observacao')
 

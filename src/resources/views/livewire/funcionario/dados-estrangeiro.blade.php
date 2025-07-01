@@ -5,7 +5,7 @@
             <div class="form-check form-switch">
                 <input class="form-check-input"
                     type="checkbox"
-                    wire:model.live="funcionario.eh_estrangeiro"
+                    wire:model.live.debounce.500ms="funcionario.eh_estrangeiro"
                     id="ehEstrangeiro">
                 <label class="form-check-label" for="ehEstrangeiro">
                     É estrangeiro?
@@ -23,7 +23,7 @@
                 <div class="form-floating">
                     <input type="text"
                         class="form-control @error('funcionario.pais_origem') is-invalid @enderror"
-                        wire:model.live="funcionario.pais_origem"
+                        wire:model.live.debounce.500ms="funcionario.pais_origem"
                         placeholder="País">
                     <label>País de Origem *</label>
                     @error('funcionario.pais_origem')
@@ -36,7 +36,7 @@
             <div class="col-md-6">
                 <div class="form-floating">
                     <select class="form-select @error('funcionario.tipo_visto') is-invalid @enderror"
-                        wire:model.live="funcionario.tipo_visto">
+                        wire:model.live.debounce.500ms="funcionario.tipo_visto">
                         <option value="">Selecione...</option>
                         <option value="permanente">Visto Permanente</option>
                         <option value="temporario">Visto Temporário</option>
@@ -56,7 +56,7 @@
                 <div class="form-floating">
                     <input type="date"
                         class="form-control @error('funcionario.data_chegada_brasil') is-invalid @enderror"
-                        wire:model.live="funcionario.data_chegada_brasil">
+                        wire:model.live.debounce.500ms="funcionario.data_chegada_brasil">
                     <label>Data de Chegada no Brasil *</label>
                     @error('funcionario.data_chegada_brasil')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -68,7 +68,7 @@
             <div class="col-md-4">
                 <div class="form-floating">
                     <select class="form-select @error('funcionario.casado_brasileiro') is-invalid @enderror"
-                        wire:model.live="funcionario.casado_brasileiro">
+                        wire:model.live.debounce.500ms="funcionario.casado_brasileiro">
                         <option value="">Selecione...</option>
                         <option value="1">Sim</option>
                         <option value="0">Não</option>
@@ -84,7 +84,7 @@
             <div class="col-md-4">
                 <div class="form-floating">
                     <select class="form-select @error('funcionario.filhos_brasileiros') is-invalid @enderror"
-                        wire:model.live="funcionario.filhos_brasileiros">
+                        wire:model.live.debounce.500ms="funcionario.filhos_brasileiros">
                         <option value="">Selecione...</option>
                         <option value="1">Sim</option>
                         <option value="0">Não</option>

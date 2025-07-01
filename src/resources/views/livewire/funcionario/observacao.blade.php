@@ -6,7 +6,7 @@
     <div class="card-body">
         <div class="form-group">
             <textarea 
-                wire:model="funcionario.observacao" 
+                wire:model.model="funcionario.observacao" 
                 id="funcionario.observacao" 
                 class="form-control @error('funcionario.observacao') is-invalid @enderror" 
                 rows="4" 

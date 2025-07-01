@@ -18,7 +18,7 @@
                 <div class="form-floating">
                     <input type="text" 
                            class="form-control @error('dependentes.'.$index.'.nome_completo') is-invalid @enderror" 
-                           wire:model="dependentes.{{ $index }}.nome_completo" 
+                           wire:model.live.debounce.500ms.debounce.500ms="dependentes.{{ $index }}.nome_completo" 
                            placeholder="Nome completo">
                     <label>Nome Completo *</label>
                     @error('dependentes.'.$index.'.nome_completo') 
@@ -32,7 +32,7 @@
                 <div class="form-floating">
                     <input type="text" 
                            class="form-control @error('dependentes.'.$index.'.cpf') is-invalid @enderror" 
-                           wire:model="dependentes.{{ $index }}.cpf" 
+                           wire:model.live.debounce.500ms="dependentes.{{ $index }}.cpf" 
                            x-mask="999.999.999-99" 
                            placeholder="000.000.000-00">
                     <label>CPF</label>
@@ -47,7 +47,7 @@
                 <div class="form-floating">
                     <input type="date" 
                            class="form-control @error('dependentes.'.$index.'.data_nascimento') is-invalid @enderror" 
-                           wire:model="dependentes.{{ $index }}.data_nascimento">
+                           wire:model.live.debounce.500ms="dependentes.{{ $index }}.data_nascimento">
                     <label>Data de Nascimento *</label>
                     @error('dependentes.'.$index.'.data_nascimento') 
                         <div class="invalid-feedback">{{ $message }}</div> 
@@ -59,7 +59,7 @@
             <div class="col-md-4">
                 <div class="form-floating">
                     <select class="form-select @error('dependentes.'.$index.'.tipo_dependencia') is-invalid @enderror" 
-                            wire:model="dependentes.{{ $index }}.tipo_dependencia">
+                            wire:model.live.debounce.500ms="dependentes.{{ $index }}.tipo_dependencia">
                         <option value="">Selecione o tipo...</option>
                         @foreach($this->tiposDeficiencia as $key => $value)
                             <option value="{{ $key }}">{{ $value }}</option>
@@ -76,7 +76,7 @@
             <div class="col-md-4">
                 <div class="form-floating">
                     <select class="form-select @error('dependentes.'.$index.'.dependente_ir') is-invalid @enderror" 
-                            wire:model="dependentes.{{ $index }}.dependente_ir">
+                            wire:model.live.debounce.500ms="dependentes.{{ $index }}.dependente_ir">
                         <option value="">Selecione...</option>
                         <option value="1">Sim</option>
                         <option value="0">Não</option>
@@ -92,7 +92,7 @@
             <div class="col-md-4">
                 <div class="form-floating">
                     <select class="form-select @error('dependentes.'.$index.'.dependente_salario_familia') is-invalid @enderror" 
-                            wire:model="dependentes.{{ $index }}.dependente_salario_familia">
+                            wire:model.live.debounce.500ms="dependentes.{{ $index }}.dependente_salario_familia">
                         <option value="">Selecione...</option>
                         <option value="1">Sim</option>
                         <option value="0">Não</option>
@@ -108,7 +108,7 @@
             <div class="col-md-4">
                 <div class="form-floating">
                     <select class="form-select @error('dependentes.'.$index.'.dependente_plano_saude') is-invalid @enderror" 
-                            wire:model="dependentes.{{ $index }}.dependente_plano_saude">
+                            wire:model.live.debounce.500ms="dependentes.{{ $index }}.dependente_plano_saude">
                         <option value="">Selecione...</option>
                         <option value="1">Sim</option>
                         <option value="0">Não</option>

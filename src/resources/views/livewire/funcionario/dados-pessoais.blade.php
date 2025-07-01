@@ -9,7 +9,7 @@
                 <div class="form-floating">
                     <input type="text" 
                            class="form-control @error('funcionario.nome') is-invalid @enderror" 
-                           wire:model="funcionario.nome" 
+                           wire:model.live.debounce.500ms="funcionario.nome" 
                            placeholder="Nome completo">
                     <label>Nome completo *</label>
                     @error('funcionario.nome') 
@@ -24,7 +24,7 @@
                 <div class="form-floating">
                     <input type="text" 
                            class="form-control @error('funcionario.cpf') is-invalid @enderror" 
-                           wire:model="funcionario.cpf" 
+                           wire:model.live.debounce.500ms="funcionario.cpf" 
                            x-mask="999.999.999-99" 
                            placeholder="000.000.000-00">
                     <label>CPF *</label>
@@ -39,7 +39,7 @@
                 <div class="form-floating">
                     <input type="date" 
                            class="form-control @error('funcionario.data_nascimento') is-invalid @enderror" 
-                           wire:model="funcionario.data_nascimento">
+                           wire:model.live.debounce.500ms="funcionario.data_nascimento">
                     <label>Data de nascimento *</label>
                     @error('funcionario.data_nascimento') 
                         <div class="invalid-feedback">{{ $message }}</div> 
@@ -52,7 +52,7 @@
                 <div class="form-floating">
                     <input type="text" 
                             class="form-control @error('funcionario.pais_nascimento') is-invalid @enderror" 
-                            wire:model="funcionario.pais_nascimento">
+                            wire:model.live.debounce.500ms="funcionario.pais_nascimento">
                     <label>País de nascimento *</label>
                     @error('funcionario.pais_nascimento') 
                         <div class="invalid-feedback">{{ $message }}</div> 
@@ -64,7 +64,7 @@
             <div class="col-md-6">
                 <div class="form-floating">
                     <select class="form-select @error('funcionario.genero') is-invalid @enderror" 
-                            wire:model="funcionario.genero">
+                            wire:model.live.debounce.500ms="funcionario.genero">
                         <option value="">Selecione...</option>
                         <option value="masculino">Masculino</option>
                         <option value="feminino">Feminino</option>

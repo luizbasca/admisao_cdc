@@ -412,44 +412,9 @@ class FuncionarioForm extends Component
         $this->funcionario['estado'] = '';
     }
 
-    public function updated($propertyName)
+    public function updated($property)
     {
-        // Limpa erro do campo específico quando preenchido
-        $value = data_get($this, $propertyName);
-        if ($this->isFieldFilled($value)) {
-            $this->resetErrorBag($propertyName);
-        }
-
-        // Chama métodos específicos
-        $this->callSpecificUpdatedMethod($propertyName);
-    }
-
-    /**
-     * Verifica se um campo foi preenchido adequadamente
-     */
-    private function isFieldFilled($value): bool
-    {
-        if (is_bool($value)) {
-            return true;
-        }
-
-        if (is_string($value)) {
-            return trim($value) !== '';
-        }
-
-        return $value !== null && $value !== '';
-    }
-
-    /**
-     * Chama métodos específicos de updated se existirem
-     */
-    private function callSpecificUpdatedMethod($propertyName)
-    {
-        $methodName = 'updated' . str_replace(['.', '_'], '', ucwords($propertyName, '._'));
-
-        if (method_exists($this, $methodName)) {
-            $this->$methodName();
-        }
+        $this->validateOnly($property);
     }
 
     /**
