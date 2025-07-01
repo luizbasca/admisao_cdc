@@ -61,7 +61,7 @@
                     <select class="form-select @error('dependentes.'.$index.'.tipo_dependencia') is-invalid @enderror" 
                             wire:model="dependentes.{{ $index }}.tipo_dependencia">
                         <option value="">Selecione o tipo...</option>
-                        @foreach($tiposDependencia as $key => $value)
+                        @foreach($this->tiposDeficiencia as $key => $value)
                             <option value="{{ $key }}">{{ $value }}</option>
                         @endforeach
                     </select>

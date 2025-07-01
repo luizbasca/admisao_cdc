@@ -5,9 +5,6 @@
     </div>
     <div class="card-body">
         <div class="form-group">
-            <label for="funcionario.observacao" class="form-label">
-                Observações Gerais
-            </label>
             <textarea 
                 wire:model="funcionario.observacao" 
                 id="funcionario.observacao" 

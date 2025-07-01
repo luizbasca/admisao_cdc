@@ -5,57 +5,18 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Funcionario;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class FuncionarioForm extends Component
 {
-    public $funcionario = [
-        // Dados Pessoais
-        'nome' => '',
-        'cpf' => '',
-        'data_nascimento' => '',
-        'pais_nascimento' => '',
-        'genero' => '',
-        'estado_civil' => '',
-        'raca_cor' => '',
-        'escolaridade' => '',
-        'deficiencia' => '',
-
-        // Documento de Identificação
-        'tipo_documento' => '',
-        'numero_documento' => '',
-        'orgao_emissor' => '',
-        'data_emissao' => '',
-        'data_validade' => '',
-
-        // Endereço
-        'cep' => '',
-        'rua' => '',
-        'numero' => '',
-        'complemento' => '',
-        'bairro' => '',
-        'cidade' => '',
-        'estado' => '',
-
-        // Funcionário Estrangeiro
-        'eh_estrangeiro' => false,
-        'pais_origem' => '',
-        'tipo_visto' => '',
-        'data_chegada_brasil' => '',
-        'casado_brasileiro' => '',
-        'filhos_brasileiros' => '',
-
-        // Observações
-        'observacao' => '',
-
-        // Concordância com a LGPD
-        'concordancia_lgpd' => false,
-    ];
-
+    public $funcionario = [];
     public $dependentes = [];
     public $maxDependentes = 5;
+    public $funcionarioId = null;
 
-    // Opções para selects
-    public $estadosCivis = [
+    // Constantes para opções de select
+    private const ESTADOS_CIVIS = [
         'solteiro' => 'Solteiro',
         'casado' => 'Casado',
         'divorciado' => 'Divorciado',
@@ -63,7 +24,7 @@ class FuncionarioForm extends Component
         'uniao_estavel' => 'União Estável',
     ];
 
-    public $racasCores = [
+    private const RACAS_CORES = [
         'branco' => 'Branco',
         'negro' => 'Negro',
         'pardo' => 'Pardo',
@@ -72,7 +33,7 @@ class FuncionarioForm extends Component
         'nao_informado' => 'Não informado',
     ];
 
-    public $escolaridades = [
+    private const ESCOLARIDADES = [
         '01' => 'Analfabeto',
         '02' => 'Até 4ª série incompl. (EF)',
         '03' => '4ª série completa (EF)',
@@ -87,7 +48,7 @@ class FuncionarioForm extends Component
         '13' => 'Outros'
     ];
 
-    public $tiposDeficiencia = [
+    private const TIPOS_DEFICIENCIA = [
         '01' => 'Nenhuma',
         '02' => 'Física',
         '03' => 'Auditiva',
@@ -97,14 +58,14 @@ class FuncionarioForm extends Component
         '07' => 'Reabilitado'
     ];
 
-    public $tiposDocumento = [
+    private const TIPOS_DOCUMENTO = [
         'rg' => 'RG - Registro Geral',
         'cnh' => 'CNH - Carteira Nacional de Habilitação',
         'ctps' => 'CTPS - Carteira de Trabalho',
         'ric' => 'RIC - Registro de Identidade Civil',
     ];
 
-    public $estadosBrasil = [
+    private const ESTADOS_BRASIL = [
         'AC' => 'Acre',
         'AL' => 'Alagoas',
         'AP' => 'Amapá',
@@ -134,7 +95,7 @@ class FuncionarioForm extends Component
         'TO' => 'Tocantins'
     ];
 
-    public $tiposDependencia = [
+    private const TIPOS_DEPENDENCIA = [
         'filho_menor_21' => 'Filho(a) menor de 21 anos',
         'filho_universitario' => 'Filho(a) universitário até 24 anos',
         'filho_deficiente' => 'Filho(a) com deficiência',
@@ -144,51 +105,85 @@ class FuncionarioForm extends Component
         'outros' => 'Outros'
     ];
 
-    protected $rules = [
-        // Dados Pessoais - Obrigatórios
-        'funcionario.nome' => 'required|string|max:100',
-        'funcionario.cpf' => 'required|cpf|unique:funcionarios,cpf',
-        'funcionario.data_nascimento' => 'required|date|before:today',
-        'funcionario.genero' => 'required|in:masculino,feminino',
-        'funcionario.estado_civil' => 'required',
-        'funcionario.pais_nascimento' => 'required|string',
-        'funcionario.raca_cor' => 'required',
-        'funcionario.escolaridade' => 'required',
-        'funcionario.deficiencia' => 'required',
+    // Getters para acessar as constantes nas views
+    public function getEstadosCivisProperty()
+    {
+        return self::ESTADOS_CIVIS;
+    }
+    public function getRacasCoresProperty()
+    {
+        return self::RACAS_CORES;
+    }
+    public function getEscolaridadesProperty()
+    {
+        return self::ESCOLARIDADES;
+    }
+    public function getTiposDeficienciaProperty()
+    {
+        return self::TIPOS_DEFICIENCIA;
+    }
+    public function getTiposDocumentoProperty()
+    {
+        return self::TIPOS_DOCUMENTO;
+    }
+    public function getEstadosBrasilProperty()
+    {
+        return self::ESTADOS_BRASIL;
+    }
+    public function getTiposDependenciaProperty()
+    {
+        return self::TIPOS_DEPENDENCIA;
+    }
 
-        // Documento de Identificação - Obrigatórios
-        'funcionario.tipo_documento' => 'required',
-        'funcionario.numero_documento' => 'required|string|max:50',
-        'funcionario.orgao_emissor' => 'required|string|max:20',
+    protected function rules()
+    {
+        $rules = [
+            // Dados Pessoais - Obrigatórios
+            'funcionario.nome' => 'required|string|max:100',
+            'funcionario.cpf' => ['required', 'cpf'],
+            'funcionario.data_nascimento' => 'required|date|before:today',
+            'funcionario.genero' => 'required|in:masculino,feminino',
+            'funcionario.estado_civil' => 'required',
+            'funcionario.pais_nascimento' => 'required|string',
+            'funcionario.raca_cor' => 'required',
+            'funcionario.escolaridade' => 'required',
+            'funcionario.deficiencia' => 'required',
 
-        // Endereço - Obrigatórios
-        'funcionario.cep' => 'required|string|size:9',
-        'funcionario.rua' => 'required|string|max:100',
-        'funcionario.numero' => 'required|string|max:10',
-        'funcionario.bairro' => 'required|string|max:50',
-        'funcionario.cidade' => 'required|string|max:50',
-        'funcionario.estado' => 'required|string|size:2',
+            // Documento de Identificação - Obrigatórios
+            'funcionario.tipo_documento' => 'required',
+            'funcionario.numero_documento' => 'required|string|max:50',
+            'funcionario.orgao_emissor' => 'required|string|max:20',
 
-        // Funcionário Estrangeiro - Condicionais
-        'funcionario.pais_origem' => 'required_if:funcionario.eh_estrangeiro,true|max:50',
-        'funcionario.tipo_visto' => 'required_if:funcionario.eh_estrangeiro,true|max:50',
-        'funcionario.data_chegada_brasil' => 'required_if:funcionario.eh_estrangeiro,true|date',
-        'funcionario.casado_brasileiro' => 'required_if:funcionario.eh_estrangeiro,true|boolean',
-        'funcionario.filhos_brasileiros' => 'required_if:funcionario.eh_estrangeiro,true|boolean',
+            // Endereço - Obrigatórios
+            'funcionario.cep' => 'required|string|size:9',
+            'funcionario.rua' => 'required|string|max:100',
+            'funcionario.numero' => 'required|string|max:10',
+            'funcionario.bairro' => 'required|string|max:50',
+            'funcionario.cidade' => 'required|string|max:50',
+            'funcionario.estado' => 'required|string|size:2',
 
-        // Dependentes
-        'dependentes.*.nome_completo' => 'required|string|max:100',
-        'dependentes.*.cpf' => 'required|cpf',
-        'dependentes.*.data_nascimento' => 'required|date|before:today',
-        'dependentes.*.tipo_dependencia' => 'required|string',
+            // Funcionário Estrangeiro - Condicionais
+            'funcionario.pais_origem' => 'required_if:funcionario.eh_estrangeiro,true|max:50',
+            'funcionario.tipo_visto' => 'required_if:funcionario.eh_estrangeiro,true|max:50',
+            'funcionario.data_chegada_brasil' => 'required_if:funcionario.eh_estrangeiro,true|date',
+            'funcionario.casado_brasileiro' => 'required_if:funcionario.eh_estrangeiro,true|boolean',
+            'funcionario.filhos_brasileiros' => 'required_if:funcionario.eh_estrangeiro,true|boolean',
 
-        // Observação
-        'funcionario.observacao' => 'string',
+            // Dependentes
+            'dependentes.*.nome_completo' => 'required|string|max:100',
+            'dependentes.*.cpf' => 'required|cpf',
+            'dependentes.*.data_nascimento' => 'required|date|before:today',
+            'dependentes.*.tipo_dependencia' => 'required|string',
 
-        // Concordância com a LGPD
-        'funcionario.concordancia_lgpd' => 'required|boolean',
-    ];
+            // Observação
+            'funcionario.observacao' => 'nullable|string',
 
+            // Concordância com a LGPD
+            'funcionario.concordancia_lgpd' => 'required|accepted',
+        ];
+
+        return $rules;
+    }
 
     protected $messages = [
         // Dados Pessoais
@@ -201,7 +196,7 @@ class FuncionarioForm extends Component
         'funcionario.data_nascimento.date' => 'A data de nascimento deve ser uma data válida.',
         'funcionario.data_nascimento.before' => 'A data de nascimento deve ser anterior a hoje.',
         'funcionario.genero.required' => 'O gênero é obrigatório.',
-        'funcionario.pais_nascimento.required' => 'O pais nascimento é obrigatório.',
+        'funcionario.pais_nascimento.required' => 'O país de nascimento é obrigatório.',
         'funcionario.genero.in' => 'O gênero deve ser masculino ou feminino.',
         'funcionario.estado_civil.required' => 'O estado civil é obrigatório.',
         'funcionario.raca_cor.required' => 'A raça/cor é obrigatória.',
@@ -218,8 +213,8 @@ class FuncionarioForm extends Component
         // Endereço
         'funcionario.cep.required' => 'O CEP é obrigatório.',
         'funcionario.cep.size' => 'O CEP deve ter 9 caracteres (formato: 00000-000).',
-        'funcionario.rua.required' => 'A logradouro é obrigatória.',
-        'funcionario.rua.max' => 'A logradouro deve ter no máximo 100 caracteres.',
+        'funcionario.rua.required' => 'O logradouro é obrigatório.',
+        'funcionario.rua.max' => 'O logradouro deve ter no máximo 100 caracteres.',
         'funcionario.numero.required' => 'O número é obrigatório.',
         'funcionario.numero.max' => 'O número deve ter no máximo 10 caracteres.',
         'funcionario.bairro.required' => 'O bairro é obrigatório.',
@@ -248,24 +243,90 @@ class FuncionarioForm extends Component
         'dependentes.*.data_nascimento.date' => 'A data de nascimento do dependente deve ser uma data válida.',
         'dependentes.*.data_nascimento.before' => 'A data de nascimento do dependente deve ser anterior a hoje.',
         'dependentes.*.tipo_dependencia.required' => 'O tipo de dependência é obrigatório.',
-        'dependentes.*.dependente_ir.required' => 'É obrigatório informar se o dependente é para Imposto de Renda.',
-        'dependentes.*.dependente_salario_familia.required' => 'É obrigatório informar se o dependente é para Salário Família.',
-        'dependentes.*.dependente_plano_saude.required' => 'É obrigatório informar se o dependente é para Plano de Saúde.',
+
+        // LGPD
+        'funcionario.concordancia_lgpd.required' => 'É obrigatório concordar com os termos da LGPD.',
+        'funcionario.concordancia_lgpd.accepted' => 'É obrigatório concordar com os termos da LGPD.',
     ];
 
     public function mount($funcionarioId = null)
     {
+        $this->funcionarioId = $funcionarioId;
+        $this->initializeFuncionario();
+
         if ($funcionarioId) {
+            $this->loadFuncionario($funcionarioId);
+        }
+    }
+
+    /**
+     * Inicializa os dados padrão do funcionário
+     */
+    private function initializeFuncionario()
+    {
+        $this->funcionario = [
+            // Dados Pessoais
+            'nome' => '',
+            'cpf' => '',
+            'data_nascimento' => '',
+            'pais_nascimento' => '',
+            'genero' => '',
+            'estado_civil' => '',
+            'raca_cor' => '',
+            'escolaridade' => '',
+            'deficiencia' => '',
+
+            // Documento de Identificação
+            'tipo_documento' => '',
+            'numero_documento' => '',
+            'orgao_emissor' => '',
+            'data_emissao' => '',
+            'data_validade' => '',
+
+            // Endereço
+            'cep' => '',
+            'rua' => '',
+            'numero' => '',
+            'complemento' => '',
+            'bairro' => '',
+            'cidade' => '',
+            'estado' => '',
+
+            // Funcionário Estrangeiro
+            'eh_estrangeiro' => false,
+            'pais_origem' => '',
+            'tipo_visto' => '',
+            'data_chegada_brasil' => '',
+            'casado_brasileiro' => '',
+            'filhos_brasileiros' => '',
+
+            // Observações
+            'observacao' => '',
+
+            // Concordância com a LGPD
+            'concordancia_lgpd' => '',
+        ];
+    }
+
+    /**
+     * Carrega dados do funcionário para edição
+     */
+    private function loadFuncionario($funcionarioId)
+    {
+        try {
             $funcionario = Funcionario::with('dependentes')->findOrFail($funcionarioId);
-            $this->funcionario = $funcionario->toArray();
+            $this->funcionario = array_merge($this->funcionario, $funcionario->toArray());
             $this->dependentes = $funcionario->dependentes->toArray();
+        } catch (\Exception $e) {
+            session()->flash('error', 'Funcionário não encontrado.');
+            return redirect()->route('funcionarios.index');
         }
     }
 
     public function adicionarDependente()
     {
         if (count($this->dependentes) >= $this->maxDependentes) {
-            session()->flash('error', "Máximo de {$this->maxDependentes} dependentes permitidos.");
+            $this->addError('dependentes', "Máximo de {$this->maxDependentes} dependentes permitidos.");
             return;
         }
 
@@ -278,79 +339,72 @@ class FuncionarioForm extends Component
             'dependente_salario_familia' => '',
             'dependente_plano_saude' => ''
         ];
+
+        $this->dispatch('dependente-adicionado');
     }
 
     public function removerDependente($index)
     {
-        unset($this->dependentes[$index]);
-        $this->dependentes = array_values($this->dependentes);
-
-        session()->flash('success', 'Dependente removido com sucesso.');
-    }
-
-
-    public function updatedFuncionarioCep()
-    {
-        $cep = preg_replace('/\D/', '', $this->funcionario['cep']);
-
-        if (strlen($cep) == 8) {
-            $this->buscarCep();
+        if (isset($this->dependentes[$index])) {
+            unset($this->dependentes[$index]);
+            $this->dependentes = array_values($this->dependentes);
+            session()->flash('success', 'Dependente removido com sucesso.');
+            $this->dispatch('dependente-removido');
         }
     }
 
     public function buscarCep()
     {
-        $cep = preg_replace('/\D/', '', $this->funcionario['cep']);
+        $cep = preg_replace('/\D/', '', $this->funcionario['cep'] ?? '');
 
-        if (strlen($cep) != 8) {
-            session()->flash('error', 'CEP deve ter 8 dígitos.');
+        if (strlen($cep) !== 8) {
+            $this->addError('funcionario.cep', 'CEP deve ter 8 dígitos.');
             return;
         }
 
         try {
-            // Usando cURL para melhor controle da requisição
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "https://viacep.com.br/ws/{$cep}/json/");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            $response = Http::timeout(10)->get("https://viacep.com.br/ws/{$cep}/json/");
 
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-
-            if ($httpCode !== 200) {
+            if (!$response->successful()) {
                 throw new \Exception('Erro na consulta do CEP');
             }
 
-            $data = json_decode($response, true);
+            $data = $response->json();
 
-            if (!isset($data['erro'])) {
-                // Preenche os campos automaticamente
-                $this->funcionario['rua'] = $data['logradouro'] ?? '';
-                $this->funcionario['bairro'] = $data['bairro'] ?? '';
-                $this->funcionario['cidade'] = $data['localidade'] ?? '';
-                $this->funcionario['estado'] = $data['uf'] ?? '';
-
-                // Formata o CEP com hífen se não estiver formatado
-                $this->funcionario['cep'] = substr($cep, 0, 5) . '-' . substr($cep, 5);
-
-                session()->flash('success', 'Endereço preenchido automaticamente.');
-
-                // Dispara evento para atualizar a interface
-                $this->dispatch('cep-encontrado');
-            } else {
-                session()->flash('error', 'CEP não encontrado.');
-                $this->limparCamposEndereco();
+            if (isset($data['erro'])) {
+                $this->addError('funcionario.cep', 'CEP não encontrado.');
+                $this->limparEndereco();
+                return;
             }
+
+            $this->preencherEndereco($data, $cep);
+            session()->flash('success', 'Endereço preenchido automaticamente.');
+            $this->dispatch('cep-encontrado');
         } catch (\Exception $e) {
-            session()->flash('error', 'Erro ao buscar CEP. Verifique sua conexão com a internet.');
-            \Log::error('Erro ao buscar CEP: ' . $e->getMessage());
+            $this->addError('funcionario.cep', 'Erro ao buscar CEP. Verifique sua conexão com a internet.');
+            Log::error('Erro ao buscar CEP: ' . $e->getMessage());
         }
     }
 
-    // Método auxiliar para limpar campos quando CEP não é encontrado
-    private function limparCamposEndereco()
+    /**
+     * Preenche os campos de endereço com os dados do CEP
+     */
+    private function preencherEndereco($data, $cep)
+    {
+        $this->funcionario['rua'] = $data['logradouro'] ?? '';
+        $this->funcionario['bairro'] = $data['bairro'] ?? '';
+        $this->funcionario['cidade'] = $data['localidade'] ?? '';
+        $this->funcionario['estado'] = $data['uf'] ?? '';
+        $this->funcionario['cep'] = substr($cep, 0, 5) . '-' . substr($cep, 5);
+
+        // Limpa erros dos campos preenchidos
+        $this->resetErrorBag(['funcionario.rua', 'funcionario.bairro', 'funcionario.cidade', 'funcionario.estado']);
+    }
+
+    /**
+     * Limpa os campos de endereço
+     */
+    private function limparEndereco()
     {
         $this->funcionario['rua'] = '';
         $this->funcionario['bairro'] = '';
@@ -358,22 +412,78 @@ class FuncionarioForm extends Component
         $this->funcionario['estado'] = '';
     }
 
-    // Método para buscar CEP manualmente (botão)
-    public function buscarCepManual()
+    public function updated($propertyName)
     {
-        $this->buscarCep();
+        // Limpa erro do campo específico quando preenchido
+        $value = data_get($this, $propertyName);
+        if ($this->isFieldFilled($value)) {
+            $this->resetErrorBag($propertyName);
+        }
+
+        // Chama métodos específicos
+        $this->callSpecificUpdatedMethod($propertyName);
     }
 
-    // Manter o método existente também
+    /**
+     * Verifica se um campo foi preenchido adequadamente
+     */
+    private function isFieldFilled($value): bool
+    {
+        if (is_bool($value)) {
+            return true;
+        }
+
+        if (is_string($value)) {
+            return trim($value) !== '';
+        }
+
+        return $value !== null && $value !== '';
+    }
+
+    /**
+     * Chama métodos específicos de updated se existirem
+     */
+    private function callSpecificUpdatedMethod($propertyName)
+    {
+        $methodName = 'updated' . str_replace(['.', '_'], '', ucwords($propertyName, '._'));
+
+        if (method_exists($this, $methodName)) {
+            $this->$methodName();
+        }
+    }
+
+    /**
+     * Busca CEP automaticamente quando preenchido
+     */
+    public function updatedFuncionarioCep()
+    {
+        $cep = preg_replace('/\D/', '', $this->funcionario['cep'] ?? '');
+
+        if (strlen($cep) === 8) {
+            $this->buscarCep();
+        }
+    }
+
+    /**
+     * Limpa campos de estrangeiro quando não aplicável
+     */
     public function updatedFuncionarioEhEstrangeiro()
     {
-        // Limpa os campos de estrangeiro se não for estrangeiro
         if (!$this->funcionario['eh_estrangeiro']) {
-            $this->funcionario['pais_origem'] = '';
-            $this->funcionario['tipo_visto'] = '';
-            $this->funcionario['data_chegada_brasil'] = '';
-            $this->funcionario['casado_brasileiro'] = '';
-            $this->funcionario['filhos_brasileiros'] = '';
+            $camposEstrangeiro = [
+                'pais_origem',
+                'tipo_visto',
+                'data_chegada_brasil',
+                'casado_brasileiro',
+                'filhos_brasileiros'
+            ];
+
+            foreach ($camposEstrangeiro as $campo) {
+                $this->funcionario[$campo] = '';
+            }
+
+            // Limpa erros dos campos de estrangeiro
+            $this->resetErrorBag(array_map(fn($campo) => "funcionario.{$campo}", $camposEstrangeiro));
         }
     }
 
@@ -382,37 +492,70 @@ class FuncionarioForm extends Component
         $this->validate();
 
         try {
-            // Remove campos vazios opcionais
-            $dadosFuncionario = array_filter($this->funcionario, function ($value) {
-                return $value !== '' && $value !== null;
-            });
+            $dadosFuncionario = $this->prepararDadosFuncionario();
 
-            $funcionario = Funcionario::create($dadosFuncionario);
-
-            // Salva dependentes se existirem
-            foreach ($this->dependentes as $dependente) {
-                $dadosDependente = array_filter($dependente, function ($value) {
-                    return $value !== '' && $value !== null;
-                });
-
-                if (!empty($dadosDependente)) {
-                    $funcionario->dependentes()->create($dadosDependente);
-                }
+            if ($this->funcionarioId) {
+                $funcionario = Funcionario::findOrFail($this->funcionarioId);
+                $funcionario->update($dadosFuncionario);
+                $this->atualizarDependentes($funcionario);
+                $mensagem = 'Funcionário atualizado com sucesso!';
+            } else {
+                $funcionario = Funcionario::create($dadosFuncionario);
+                $this->salvarDependentes($funcionario);
+                $mensagem = 'Funcionário cadastrado com sucesso!';
             }
 
-            session()->flash('success', 'Funcionário cadastrado com sucesso!');
-
-            // Redireciona ou reseta o formulário
+            session()->flash('success', $mensagem);
             return redirect()->route('funcionarios.index');
         } catch (\Exception $e) {
+            Log::error('Erro ao salvar funcionário: ' . $e->getMessage());
             session()->flash('error', 'Erro ao salvar funcionário: ' . $e->getMessage());
         }
     }
 
+    /**
+     * Prepara dados do funcionário removendo campos vazios
+     */
+    private function prepararDadosFuncionario(): array
+    {
+        return array_filter($this->funcionario, function ($value) {
+            return $value !== '' && $value !== null;
+        });
+    }
+
+    /**
+     * Salva dependentes para novo funcionário
+     */
+    private function salvarDependentes($funcionario)
+    {
+        foreach ($this->dependentes as $dependente) {
+            $dadosDependente = array_filter($dependente, function ($value) {
+                return $value !== '' && $value !== null;
+            });
+
+            if (!empty($dadosDependente)) {
+                $funcionario->dependentes()->create($dadosDependente);
+            }
+        }
+    }
+
+    /**
+     * Atualiza dependentes para funcionário existente
+     */
+    private function atualizarDependentes($funcionario)
+    {
+        // Remove dependentes existentes
+        $funcionario->dependentes()->delete();
+
+        // Adiciona novos dependentes
+        $this->salvarDependentes($funcionario);
+    }
+
     public function resetForm()
     {
-        $this->reset(['funcionario', 'dependentes']);
-        $this->funcionario['eh_estrangeiro'] = false;
+        $this->reset(['dependentes', 'funcionarioId']);
+        $this->initializeFuncionario();
+        $this->resetErrorBag();
     }
 
     public function render()

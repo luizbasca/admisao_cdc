@@ -2,7 +2,7 @@
     <select class="form-select @error('funcionario.tipo_documento') is-invalid @enderror" 
             wire:model="funcionario.tipo_documento">
         <option value="">Selecione o tipo de documento...</option>
-        @foreach($tiposDocumento as $key => $value)
+        @foreach($this->tiposDocumento as $key => $value)
             <option value="{{ $key }}">{{ $value }}</option>
         @endforeach
     </select>

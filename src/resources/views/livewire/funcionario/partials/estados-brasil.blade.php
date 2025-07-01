@@ -2,8 +2,8 @@
     <select class="form-select @error('funcionario.estado') is-invalid @enderror" 
             wire:model="funcionario.estado">
         <option value="">Selecione o estado...</option>
-        @foreach($estadosBrasil as $sigla => $nome)
-            <option value="{{ $sigla }}">{{ $nome }} ({{ $sigla }})</option>
+        @foreach($this->estadosBrasil as $key => $value)
+            <option value="{{ $key }}">{{ $value }}</option>
         @endforeach
     </select>
     <label>Estado *</label>

@@ -2,7 +2,7 @@
     <select class="form-select @error('funcionario.deficiencia') is-invalid @enderror" 
             wire:model="funcionario.deficiencia">
         <option value="">Selecione...</option>
-        @foreach($tiposDeficiencia as $key => $value)
+        @foreach($this->tiposDeficiencia as $key => $value)
             <option value="{{ $key }}">{{ $value }}</option>
         @endforeach
     </select>
