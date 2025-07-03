@@ -1,6 +1,9 @@
-<div class="card mb-4">
-    <div class="card-header">
-        <h5>Documento de Identificação</h5>
+
+<!-- Documento de Identificação -->
+<section class="card section-card" data-section="1">
+    <div class="section-header">
+        <i class="bi bi-person-fill"></i>
+        <h2 class="h4 mb-0">Documento de Identificação</h2>
     </div>
     <div class="card-body">
 
@@ -65,4 +68,4 @@
             </div>
         </div>
     </div>
-</div>
+</section>

@@ -1,19 +1,18 @@
-<div class="card mb-4">
-    <div class="card-header">
-        <div class="d-flex align-items-center">
-            <h5 class="mb-0 me-3">Estrangeiro</h5>
-            <div class="form-check form-switch">
-                <input class="form-check-input"
-                    type="checkbox"
-                    wire:model.live.debounce.500ms="funcionario.eh_estrangeiro"
-                    id="ehEstrangeiro">
-                <label class="form-check-label" for="ehEstrangeiro">
-                    É estrangeiro?
-                </label>
-            </div>
+<!-- Estrangeiro -->
+<section class="card section-card" data-section="1">
+    <div class="section-header">
+        <i class="bi bi-person-fill"></i>
+        <h2 class="h4 mb-0">Estrangeiro</h2>
+        <div class="form-check form-switch">
+            <input class="form-check-input"
+                type="checkbox"
+                wire:model.live.debounce.500ms="funcionario.eh_estrangeiro"
+                id="ehEstrangeiro">
+            <label class="form-check-label" for="ehEstrangeiro">
+                É estrangeiro?
+            </label>
         </div>
     </div>
-
     @if($funcionario['eh_estrangeiro'] ?? false)
     <div class="card-body">
 
@@ -106,4 +105,4 @@
         </div>
     </div>
     @endif
-</div>
+</section>

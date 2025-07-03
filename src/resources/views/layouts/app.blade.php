@@ -20,8 +20,8 @@
 
     <!-- Main Content -->
     <main class="container my-4">
-    @include('partials.alerts')
-    @yield('content')
+        @include('partials.alerts')
+        @yield('content')
     </main>
 
     @include('partials.toasts')

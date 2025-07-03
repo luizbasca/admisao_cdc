@@ -1,7 +1,8 @@
-{{-- resources/views/livewire/funcionario/dependentes.blade.php --}}
-<div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5>Dependentes</h5>
+<!-- Dependentes -->
+<section class="card section-card" data-section="1">
+    <div class="section-header">
+        <i class="bi bi-person-fill"></i>
+        <h2 class="h4 mb-0">Dependentes</h2>
         <button type="button" 
                 class="btn btn-primary" 
                 wire:click="adicionarDependente" 
@@ -16,4 +17,4 @@
             @include('livewire.funcionario.partials.dependentes-empty')
         @endforelse
     </div>
-</div>
+</section>

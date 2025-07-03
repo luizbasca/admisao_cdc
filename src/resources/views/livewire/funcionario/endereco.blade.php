@@ -1,6 +1,8 @@
-<div class="card mb-4">
-    <div class="card-header">
-        <h5>Endereço</h5>
+<!-- Endereço -->
+<section class="card section-card" data-section="1">
+    <div class="section-header">
+        <i class="bi bi-person-fill"></i>
+        <h2 class="h4 mb-0">Endereço</h2>
     </div>
     <div class="card-body">
         <div class="row g-3">
@@ -94,7 +96,7 @@
             </div>
         </div>
     </div>
-</div>
+</section>
 
 {{-- Script para melhorar a experiência do usuário --}}
 <script>

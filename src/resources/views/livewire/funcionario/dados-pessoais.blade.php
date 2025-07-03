@@ -1,6 +1,8 @@
-<div class="card mb-4">
-    <div class="card-header">
-        <h5>Dados do Funcionário</h5>
+<!-- Dados do Funcionário -->
+<section class="card section-card" data-section="1">
+    <div class="section-header">
+        <i class="bi bi-person-fill"></i>
+        <h2 class="h4 mb-0">Dados do Funcionário</h2>
     </div>
     <div class="card-body">
         <div class="row g-3">
@@ -51,8 +53,8 @@
             <div class="col-md-6">
                 <div class="form-floating">
                     <input type="text" 
-                            class="form-control @error('funcionario.pais_nascimento') is-invalid @enderror" 
-                            wire:model.live.debounce.500ms="funcionario.pais_nascimento">
+                           class="form-control @error('funcionario.pais_nascimento') is-invalid @enderror" 
+                           wire:model.live.debounce.500ms="funcionario.pais_nascimento">
                     <label>País de nascimento *</label>
                     @error('funcionario.pais_nascimento') 
                         <div class="invalid-feedback">{{ $message }}</div> 
@@ -95,7 +97,6 @@
             <div class="col-md-6">
                 @include('livewire.funcionario.partials.deficiencia')
             </div>
-
         </div>
     </div>
-</div>
+</section>

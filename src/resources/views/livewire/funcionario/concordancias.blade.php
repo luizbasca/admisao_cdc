@@ -1,10 +1,8 @@
-
-<div class="card mb-4">
-    <div class="card-header">
-        <h5 class="card-title mb-0">
-            <i class="fas fa-file-contract me-2"></i>
-            Termo LGPD
-        </h5>
+<!-- Termo LGPD -->
+<section class="card section-card" data-section="1">
+    <div class="section-header">
+        <i class="bi bi-person-fill"></i>
+        <h2 class="h4 mb-0">Termo LGPD</h2>
     </div>
     <div class="card-body">
 
@@ -83,4 +81,4 @@
             </div>
         </div>
     </div>
-</div>
+</section>
