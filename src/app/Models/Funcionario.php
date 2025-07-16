@@ -45,6 +45,18 @@ class Funcionario extends Model
         'casado_brasileiro',
         'filhos_brasileiros',
 
+        // Dependentes
+        'possui_dependentes',
+
+        // Sindicato - Novos campos
+        'filiado_sindicato',
+        'nome_sindicato',
+
+        // Trabalho em Outra Empresa - Novos campos
+        'trabalhando_outra_empresa',
+        'nome_outra_empresa',
+        'salario_outra_empresa',
+
         // Observação
         'observacao',
 
@@ -60,6 +72,11 @@ class Funcionario extends Model
         'data_chegada_brasil' => 'date',
         'casado_brasileiro' => 'boolean',
         'filhos_brasileiros' => 'boolean',
+        'possui_dependentes' => 'boolean',
+        'filiado_sindicato' => 'boolean',
+        'trabalhando_outra_empresa' => 'boolean',
+        'concordancia_lgpd' => 'boolean',
+        'salario_outra_empresa' => 'decimal:2',
     ];
 
     public function dependentes()
@@ -197,5 +214,14 @@ class Funcionario extends Model
     public function getGeneroFormatado(): string
     {
         return $this->genero === 'masculino' ? 'Masculino' : 'Feminino';
+    }
+
+    // Método para formatar salário da outra empresa
+    public function getSalarioOutraEmpresaFormatado(): string
+    {
+        if ($this->salario_outra_empresa) {
+            return 'R$ ' . number_format($this->salario_outra_empresa, 2, ',', '.');
+        }
+        return 'Não informado';
     }
 }

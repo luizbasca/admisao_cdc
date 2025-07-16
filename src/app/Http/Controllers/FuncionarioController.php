@@ -59,15 +59,25 @@ class FuncionarioController extends Controller
             'casado_brasileiro' => 'required_if:eh_estrangeiro,true|boolean',
             'filhos_brasileiros' => 'required_if:eh_estrangeiro,true|boolean',
 
-            // Dependentes - atualizando para incluir os novos campos
+            // Dependentes - incluindo os novos campos
+            'possui_dependentes' => 'boolean',
             'dependentes' => 'nullable|array|max:5',
             'dependentes.*.nome_completo' => 'required_with:dependentes|string|max:100',
-            'dependentes.*.cpf' => 'nullable|cpf',
+            'dependentes.*.cpf' => 'required_with:dependentes|cpf',
             'dependentes.*.data_nascimento' => 'required_with:dependentes|date|before:today',
             'dependentes.*.tipo_dependencia' => 'required_with:dependentes|in:filho_menor_21,filho_universitario,filho_deficiente,conjuge,companheiro,pais,outros',
-            'dependentes.*.dependente_ir' => 'required_with:dependentes|boolean',
-            'dependentes.*.dependente_salario_familia' => 'required_with:dependentes|boolean',
-            'dependentes.*.dependente_plano_saude' => 'required_with:dependentes|boolean',
+            'dependentes.*.dependente_ir' => 'boolean',
+            'dependentes.*.dependente_salario_familia' => 'boolean',
+            'dependentes.*.dependente_plano_saude' => 'boolean',
+
+            // Sindicato - Novos campos
+            'filiado_sindicato' => 'required|boolean',
+            'nome_sindicato' => 'required_if:filiado_sindicato,true|string|max:100',
+
+            // Trabalho em Outra Empresa - Novos campos
+            'trabalhando_outra_empresa' => 'required|boolean',
+            'nome_outra_empresa' => 'required_if:trabalhando_outra_empresa,true|string|max:100',
+            'salario_outra_empresa' => 'required_if:trabalhando_outra_empresa,true|numeric|min:0',
 
             // Observação
             'observacao' => 'nullable|string',
@@ -87,6 +97,9 @@ class FuncionarioController extends Controller
             $validated['eh_estrangeiro'] = $validated['eh_estrangeiro'] ?? false;
             $validated['casado_brasileiro'] = $validated['casado_brasileiro'] ?? false;
             $validated['filhos_brasileiros'] = $validated['filhos_brasileiros'] ?? false;
+            $validated['possui_dependentes'] = $validated['possui_dependentes'] ?? false;
+            $validated['filiado_sindicato'] = $validated['filiado_sindicato'] ?? false;
+            $validated['trabalhando_outra_empresa'] = $validated['trabalhando_outra_empresa'] ?? false;
             $validated['concordancia_lgpd'] = $validated['concordancia_lgpd'] ?? false;
 
             // Separar dados dos dependentes
@@ -154,9 +167,9 @@ class FuncionarioController extends Controller
     public function update(Request $request, Funcionario $funcionario)
     {
         $validated = $request->validate([
-            // Mesmas validações do store, mas sem unique no CPF se for o mesmo funcionário
+            // Dados Pessoais - Obrigatórios
             'nome' => 'required|string|max:100',
-            'cpf' => 'required|cpf|',
+            'cpf' => 'required|cpf',
             'data_nascimento' => 'required|date|before:today',
             'pais_nascimento' => 'required|string|max:50',
             'genero' => 'required|in:masculino,feminino',
@@ -190,20 +203,30 @@ class FuncionarioController extends Controller
             'filhos_brasileiros' => 'required_if:eh_estrangeiro,true|boolean',
 
             // Dependentes - incluindo os novos campos
+            'possui_dependentes' => 'boolean',
             'dependentes' => 'nullable|array|max:5',
             'dependentes.*.nome_completo' => 'required_with:dependentes|string|max:100',
-            'dependentes.*.cpf' => 'nullable|cpf',
+            'dependentes.*.cpf' => 'required_with:dependentes|cpf',
             'dependentes.*.data_nascimento' => 'required_with:dependentes|date|before:today',
             'dependentes.*.tipo_dependencia' => 'required_with:dependentes|in:filho_menor_21,filho_universitario,filho_deficiente,conjuge,companheiro,pais,outros',
             'dependentes.*.dependente_ir' => 'boolean',
             'dependentes.*.dependente_salario_familia' => 'boolean',
             'dependentes.*.dependente_plano_saude' => 'boolean',
 
+            // Sindicato - Novos campos
+            'filiado_sindicato' => 'required|boolean',
+            'nome_sindicato' => 'required_if:filiado_sindicato,true|string|max:100',
+
+            // Trabalho em Outra Empresa - Novos campos
+            'trabalhando_outra_empresa' => 'required|boolean',
+            'nome_outra_empresa' => 'required_if:trabalhando_outra_empresa,true|string|max:100',
+            'salario_outra_empresa' => 'required_if:trabalhando_outra_empresa,true|numeric|min:0',
+
             // Observação
             'observacao' => 'nullable|string',
 
             // Concordância com a LGPD
-            'funcionario.concordancia_lgpd' => 'required|boolean',
+            'concordancia_lgpd' => 'required|boolean',
         ]);
 
         try {
@@ -217,6 +240,9 @@ class FuncionarioController extends Controller
             $validated['eh_estrangeiro'] = $validated['eh_estrangeiro'] ?? false;
             $validated['casado_brasileiro'] = $validated['casado_brasileiro'] ?? false;
             $validated['filhos_brasileiros'] = $validated['filhos_brasileiros'] ?? false;
+            $validated['possui_dependentes'] = $validated['possui_dependentes'] ?? false;
+            $validated['filiado_sindicato'] = $validated['filiado_sindicato'] ?? false;
+            $validated['trabalhando_outra_empresa'] = $validated['trabalhando_outra_empresa'] ?? false;
             $validated['concordancia_lgpd'] = $validated['concordancia_lgpd'] ?? false;
 
             // Separar dados dos dependentes
