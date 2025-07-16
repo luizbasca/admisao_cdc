@@ -1,5 +1,5 @@
 <!-- Sindicato -->
-<section class="card section-card" data-section="1">
+<section class="card section-card" data-section="6">
     <div class="section-header">
         <i class="bi bi-person-fill"></i>
         <h2 class="h4 mb-0">Sindicato</h2>

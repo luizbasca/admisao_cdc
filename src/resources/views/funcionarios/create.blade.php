@@ -13,7 +13,7 @@
         </h1>
         <p class="lead mb-0">Sistema E-Social</p>
     </header>
-    <main class="p-4">
+    <main class="p-1">
         <livewire:funcionario-form />
     </main>
 </div>

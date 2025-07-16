@@ -46,6 +46,18 @@ return new class extends Migration
             $table->boolean('casado_brasileiro')->default(false);
             $table->boolean('filhos_brasileiros')->default(false);
 
+            // Dependentes
+            $table->boolean('possui_dependentes')->default(false);
+
+            // Dados do Sindicato
+            $table->boolean('filiado_sindicato')->default(false);
+            $table->string('nome_sindicato', 100)->nullable();
+
+            // Vínculo Empregatício - Trabalho em Outra Empresa
+            $table->boolean('trabalhando_outra_empresa')->default(false);
+            $table->string('nome_outra_empresa', 100)->nullable();
+            $table->decimal('salario_outra_empresa', 10, 2)->nullable();
+
             // Observações	
             $table->text('observacao')->nullable();
 

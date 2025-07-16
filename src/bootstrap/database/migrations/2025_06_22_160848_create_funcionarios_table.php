@@ -17,7 +17,7 @@ return new class extends Migration
             $table->date('data_nascimento');
             $table->string('pais_nascimento');
             $table->enum('genero', ['masculino', 'feminino']);
-            $table->enum('estado_civil', ['solteiro', 'casado', 'divorciado', 'viuvo', 'uniao_estavel', 'outros']);
+            $table->enum('estado_civil', ['solteiro', 'casado', 'divorciado', 'viuvo', 'uniao_estavel']);
             $table->string('outros_estado_texto')->nullable();
             $table->enum('raca_cor', ['branco', 'negro', 'pardo', 'amarelo', 'indigena', 'nao_informado'])->nullable();
             $table->string('escolaridade', 2)->nullable();

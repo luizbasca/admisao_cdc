@@ -163,6 +163,7 @@ class FuncionarioForm extends Component
             'funcionario.estado' => 'required|string|size:2',
 
             // Funcionário Estrangeiro - Condicionais
+            'funcionario.eh_estrangeiro' => 'required|boolean',
             'funcionario.pais_origem' => 'required_if:funcionario.eh_estrangeiro,true|max:50',
             'funcionario.tipo_visto' => 'required_if:funcionario.eh_estrangeiro,true|max:50',
             'funcionario.data_chegada_brasil' => 'required_if:funcionario.eh_estrangeiro,true|date',
@@ -170,10 +171,20 @@ class FuncionarioForm extends Component
             'funcionario.filhos_brasileiros' => 'required_if:funcionario.eh_estrangeiro,true|boolean',
 
             // Dependentes
+            'funcionario.possui_dependentes' => 'required|boolean',
             'dependentes.*.nome_completo' => 'required|string|max:100',
             'dependentes.*.cpf' => 'required|cpf',
             'dependentes.*.data_nascimento' => 'required|date|before:today',
             'dependentes.*.tipo_dependencia' => 'required|string',
+
+            // Sindicato - Obrigatório e condicional
+            'funcionario.filiado_sindicato' => 'required|boolean',
+            'funcionario.nome_sindicato' => 'required_if:funcionario.filiado_sindicato,1|string|max:100',
+
+            // Trabalho em Outra Empresa - Obrigatório e condicionais
+            'funcionario.trabalhando_outra_empresa' => 'required|boolean',
+            'funcionario.nome_outra_empresa' => 'required_if:funcionario.trabalhando_outra_empresa,1|string|max:100',
+            'funcionario.salario_outra_empresa' => 'required_if:funcionario.trabalhando_outra_empresa,1|numeric|min:0',
 
             // Observação
             'funcionario.observacao' => 'nullable|string',
@@ -225,6 +236,7 @@ class FuncionarioForm extends Component
         'funcionario.estado.size' => 'O estado deve ter exatamente 2 caracteres.',
 
         // Funcionário Estrangeiro
+        'funcionario.eh_estrangeiro' => 'É obrigatório informar se é estrangeiro.',
         'funcionario.pais_origem.required_if' => 'O país de origem é obrigatório para funcionários estrangeiros.',
         'funcionario.pais_origem.max' => 'O país de origem deve ter no máximo 50 caracteres.',
         'funcionario.tipo_visto.required_if' => 'O tipo de visto é obrigatório para funcionários estrangeiros.',
@@ -235,6 +247,7 @@ class FuncionarioForm extends Component
         'funcionario.filhos_brasileiros.required_if' => 'É obrigatório informar se possui filhos brasileiros para funcionários estrangeiros.',
 
         // Dependentes
+        'funcionario.possui_dependentes' => 'É obrigatório informar tem dependentes.',
         'dependentes.*.nome_completo.required' => 'O nome completo do dependente é obrigatório.',
         'dependentes.*.nome_completo.max' => 'O nome completo do dependente deve ter no máximo 100 caracteres.',
         'dependentes.*.cpf.cpf' => 'O CPF do dependente deve ser válido.',
@@ -243,6 +256,21 @@ class FuncionarioForm extends Component
         'dependentes.*.data_nascimento.date' => 'A data de nascimento do dependente deve ser uma data válida.',
         'dependentes.*.data_nascimento.before' => 'A data de nascimento do dependente deve ser anterior a hoje.',
         'dependentes.*.tipo_dependencia.required' => 'O tipo de dependência é obrigatório.',
+
+        // Sindicato
+        'funcionario.filiado_sindicato.required' => 'É obrigatório informar se é filiado a sindicato.',
+        'funcionario.filiado_sindicato.boolean' => 'O campo filiado a sindicato deve ser verdadeiro ou falso.',
+        'funcionario.nome_sindicato.required_if' => 'O nome do sindicato é obrigatório quando filiado.',
+        'funcionario.nome_sindicato.max' => 'O nome do sindicato deve ter no máximo 100 caracteres.',
+
+        // Trabalho em Outra Empresa
+        'funcionario.trabalhando_outra_empresa.required' => 'É obrigatório informar se trabalha em outra empresa.',
+        'funcionario.trabalhando_outra_empresa.boolean' => 'O campo trabalho em outra empresa deve ser verdadeiro ou falso.',
+        'funcionario.nome_outra_empresa.required_if' => 'O nome da outra empresa é obrigatório quando trabalha em outra empresa.',
+        'funcionario.nome_outra_empresa.max' => 'O nome da outra empresa deve ter no máximo 100 caracteres.',
+        'funcionario.salario_outra_empresa.required_if' => 'O salário da outra empresa é obrigatório quando trabalha em outra empresa.',
+        'funcionario.salario_outra_empresa.numeric' => 'O salário deve ser um valor numérico.',
+        'funcionario.salario_outra_empresa.min' => 'O salário deve ser maior ou igual a zero.',
 
         // LGPD
         'funcionario.concordancia_lgpd.required' => 'É obrigatório concordar com os termos da LGPD.',
@@ -293,12 +321,24 @@ class FuncionarioForm extends Component
             'estado' => '',
 
             // Funcionário Estrangeiro
-            'eh_estrangeiro' => false,
+            'eh_estrangeiro' => '',
             'pais_origem' => '',
             'tipo_visto' => '',
             'data_chegada_brasil' => '',
             'casado_brasileiro' => '',
             'filhos_brasileiros' => '',
+
+            // Dependentes
+            'possui_dependentes' => '',
+
+            // Sindicato
+            'filiado_sindicato' => '',
+            'nome_sindicato' => '',
+
+            // Trabalho em Outra Empresa
+            'trabalhando_outra_empresa' => '',
+            'nome_outra_empresa' => '',
+            'salario_outra_empresa' => '',
 
             // Observações
             'observacao' => '',
@@ -521,6 +561,30 @@ class FuncionarioForm extends Component
         $this->reset(['dependentes', 'funcionarioId']);
         $this->initializeFuncionario();
         $this->resetErrorBag();
+    }
+
+    public function updatedFuncionarioFiliadoSindicato()
+    {
+        if (!$this->funcionario['filiado_sindicato']) {
+            $this->funcionario['nome_sindicato'] = '';
+            $this->resetErrorBag(['funcionario.nome_sindicato']);
+        }
+    }
+
+    public function updatedFuncionarioTrabalhandoOutraEmpresa()
+    {
+        if (!$this->funcionario['trabalhando_outra_empresa']) {
+            $camposOutraEmpresa = [
+                'nome_outra_empresa',
+                'salario_outra_empresa'
+            ];
+
+            foreach ($camposOutraEmpresa as $campo) {
+                $this->funcionario[$campo] = '';
+            }
+
+            $this->resetErrorBag(array_map(fn($campo) => "funcionario.{$campo}", $camposOutraEmpresa));
+        }
     }
 
     public function render()

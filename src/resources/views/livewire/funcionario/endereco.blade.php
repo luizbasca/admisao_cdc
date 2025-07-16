@@ -1,5 +1,5 @@
 <!-- Endereço -->
-<section class="card section-card" data-section="1">
+<section class="card section-card" data-section="3">
     <div class="section-header">
         <i class="bi bi-person-fill"></i>
         <h2 class="h4 mb-0">Endereço</h2>

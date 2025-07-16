@@ -1,5 +1,5 @@
 <!-- Termo LGPD -->
-<section class="card section-card" data-section="1">
+<section class="card section-card" data-section="9">
     <div class="section-header">
         <i class="bi bi-person-fill"></i>
         <h2 class="h4 mb-0">Termo LGPD</h2>

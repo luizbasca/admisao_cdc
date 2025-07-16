@@ -1,8 +1,8 @@
 <!-- Múltiplos Vínculos -->
-<section class="card section-card" data-section="1">
+<section class="card section-card" data-section="8">
     <div class="section-header">
         <i class="bi bi-person-fill"></i>
-        <h2 class="h4 mb-0">Múltiplos Vínculos</h2>
+        <h2 class="h4 mb-0">Trabalho em Outra Empresa</h2>
     </div>
     <div class="card-body">
         <div class="row g-3">
@@ -41,25 +41,11 @@
                 <div class="col-md-6">
                     <div class="form-floating">
                         <input type="text"
-                               class="form-control @error('funcionario.cnpj_outra_empresa') is-invalid @enderror"
-                               wire:model.live.debounce.500ms="funcionario.cnpj_outra_empresa"
-                               x-mask="99.999.999/9999-99"
-                               placeholder="00.000.000/0000-00">
-                        <label>CNPJ da empresa</label>
-                        @error('funcionario.cnpj_outra_empresa')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <input type="text"
-                               class="form-control @error('funcionario.cargo_outra_empresa') is-invalid @enderror"
-                               wire:model.live="funcionario.cargo_outra_empresa"
-                               placeholder="Cargo/função">
-                        <label>Cargo/Função na empresa</label>
-                        @error('funcionario.cargo_outra_empresa')
+                               class="form-control @error('funcionario.salario_outra_empresa') is-invalid @enderror"
+                               wire:model.live="funcionario.salario_outra_empresa"
+                               placeholder="Salário">
+                        <label>Salário na empresa *</label>
+                        @error('funcionario.salario_outra_empresa')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
