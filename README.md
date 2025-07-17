@@ -1,117 +1,122 @@
-# docker-laravel 🐳
+# Sistema de Admissão de Funcionários para o eSocial
 
-<p align="center">
-    <img src="https://user-images.githubusercontent.com/35098175/145682384-0f531ede-96e0-44c3-a35e-32494bd9af42.png" alt="docker-laravel">
-</p>
-<p align="center">
-    <img src="https://github.com/ucan-lab/docker-laravel/actions/workflows/laravel-create-project.yaml/badge.svg" alt="Test laravel-create-project.yml">
-    <img src="https://github.com/ucan-lab/docker-laravel/actions/workflows/laravel-git-clone.yaml/badge.svg" alt="Test laravel-git-clone.yml">
-    <img src="https://img.shields.io/github/license/ucan-lab/docker-laravel" alt="License">
-</p>
+Este é um sistema desenvolvido em **Laravel** para gerenciar o processo de admissão de novos funcionários, coletando de forma estruturada todas as informações necessárias para o registro no eSocial. O projeto utiliza **Livewire** para criar uma interface reativa e dinâmica, e **Docker** para garantir um ambiente de desenvolvimento padronizado e de fácil configuração.
 
-## Introduction
+## ✨ Funcionalidades Principais
 
-Build a simple laravel development environment with Docker Compose. Support with Windows(WSL2), macOS(Intel and Apple Silicon) and Linux.
+  * **Cadastro Completo de Funcionários:** Formulário intuitivo dividido em seções para coletar dados pessoais, documentos, endereço, informações sobre estrangeiros, e mais.
+  * **Gerenciamento de Dependentes:** Adicione e remova dependentes dinamicamente, com campos específicos para imposto de renda, salário-família e plano de saúde.
+  * **Validação de Dados em Tempo Real:** A reatividade do Livewire, combinada com a validação do Laravel, fornece feedback instantâneo ao usuário.
+  * **Consulta de CEP Automática:** Preenchimento automático de endereço ao digitar o CEP, consumindo a API do ViaCEP.
+  * **Geração de PDF:** Exporte a ficha de cadastro completa do funcionário para um arquivo PDF com um único clique.
+  * **Interface Responsiva:** Visual moderno e adaptável para diferentes tamanhos de tela, construído com Bootstrap 5.
+  * **Ambiente Dockerizado:** Configuração completa com containers para PHP, Nginx, MySQL e Mailpit, facilitando a instalação e a execução do projeto.
 
-## Usage
+-----
 
-### Create an initial Laravel project
+## 🛠️ Tecnologias Utilizadas
 
-1. Click [Use this template](https://github.com/ucan-lab/docker-laravel/generate)
-2. Git clone & change directory
-3. Execute the following command
+  * **Backend:** Laravel 12, PHP 8.3
+  * **Frontend:** Livewire 3, Alpine.js, Bootstrap 5, SASS
+  * **Banco de Dados:** MySQL 8.4
+  * **Servidor Web:** Nginx
+  * **Ambiente de Desenvolvimento:** Docker, Docker Compose
+  * **Geração de PDF:** `barryvdh/laravel-dompdf`
+  * **Validação de Documentos:** `geekcom/validator-docs`
 
-```bash
-$ task for-linux-env # Linux environment only
-$ task create-project
+-----
 
-# or...
+## 📋 Pré-requisitos
 
-$ make for-linux-env # Linux environment only
-$ make create-project
+  * Docker
+  * Docker Compose
+  * Task (opcional, para usar os comandos do `Taskfile.yml`. Pode ser substituído por `make`).
 
-# or...
+-----
 
-$ echo "UID=$(id -u)" >> .env # Linux environment only
-$ echo "GID=$(id -g)" >> .env # Linux environment only
+## 🚀 Instalação e Execução
 
-$ mkdir -p src
-$ docker compose build
-$ docker compose up -d
-$ docker compose exec app composer create-project --prefer-dist laravel/laravel .
-$ docker compose exec app php artisan key:generate
-$ docker compose exec app php artisan storage:link
-$ docker compose exec app chmod -R 777 storage bootstrap/cache
-$ docker compose exec app php artisan migrate
-$ docker compose exec app npm install
-$ docker compose exec app npm run dev
-$ docker compose exec app npm run build
-$ docker compose exec app composer update
-```
-
-http://localhost
-
-### Create an existing Laravel project
-
-1. Git clone & change directory
-2. Execute the following command
+**1. Clonar o Repositório**
 
 ```bash
-$ task for-linux-env # Linux environment only
-$ task install
-
-# or...
-
-$ make for-linux-env # Linux environment only
-$ make install
-
-# or...
-
-$ echo "UID=$(id -u)" >> .env # Linux environment only
-$ echo "GID=$(id -g)" >> .env # Linux environment only
-
-$ docker compose build
-$ docker compose up -d
-$ docker compose exec app composer install
-$ docker compose exec app cp .env.example .env
-$ docker compose exec app php artisan key:generate
-$ docker compose exec app php artisan storage:link
-$ docker compose exec app chmod -R 777 storage bootstrap/cache
+git clone <URL_DO_SEU_REPOSITORIO>
+cd admisao_cdc
 ```
 
-http://localhost
+**2. Configurar o Ambiente**
 
-## Tips
-
-- Read this [Taskfile](https://github.com/ucan-lab/docker-laravel/blob/main/Taskfile.yml).
-- Read this [Makefile](https://github.com/ucan-lab/docker-laravel/blob/main/Makefile).
-- Read this [Wiki](https://github.com/ucan-lab/docker-laravel/wiki).
-
-## Container structures
+Primeiro, crie o arquivo `.env` a partir do exemplo. O Docker Compose usará as variáveis deste arquivo para configurar os containers.
 
 ```bash
-├── app
-├── web
-└── db
+cp src/.env.example src/.env
 ```
 
-### app container
+Se você estiver em um ambiente Linux, execute o seguinte comando para configurar corretamente as permissões de usuário e grupo:
 
-- Base image
-  - [php](https://hub.docker.com/_/php):8.3-fpm-bullseye
-  - [composer](https://hub.docker.com/_/composer):2.7
+```bash
+task for-linux-env
 
-### web container
+# Ou manualmente:
+# echo "UID=$(id -u)" >> .env
+# echo "GID=$(id -g)" >> .env
+```
 
-- Base image
-  - [nginx](https://hub.docker.com/_/nginx):1.26
+**3. Subir os Containers**
 
-### db container
+Use o `Taskfile.yml` para simplificar o processo. Este comando irá construir as imagens e iniciar os containers.
 
-- Base image
-  - [mysql](https://hub.docker.com/_/mysql):8.4
+```bash
+task up
+```
 
-### mailpit container
+Alternativamente, use o Docker Compose diretamente:
 
-- Base image
-  - [axllent/mailpit](https://hub.docker.com/r/axllent/mailpit)
+```bash
+docker-compose up -d --build
+```
+
+**4. Instalar Dependências e Configurar a Aplicação**
+
+Com os containers em execução, execute o comando de instalação, que irá:
+
+  * Instalar as dependências do Composer.
+  * Instalar as dependências do NPM.
+  * Gerar a chave da aplicação.
+  * Criar o link simbólico para o `storage`.
+  * Executar as migrações do banco de dados e popular com dados iniciais (`seeders`).
+
+<!-- end list -->
+
+```bash
+task install
+```
+
+**5. Compilar os Assets de Frontend**
+
+Execute o Vite em modo de desenvolvimento para compilar os assets (CSS e JS) e habilitar o Hot Module Replacement (HMR).
+
+```bash
+docker-compose exec app npm run dev
+```
+
+**Pronto\!** A aplicação estará disponível em seu navegador.
+
+-----
+
+## 🌐 Endereços Úteis
+
+  * **Aplicação:** [http://localhost](https://www.google.com/search?q=http://localhost)
+  * **Mailpit (para visualizar e-mails):** [http://localhost:8025](https://www.google.com/search?q=http://localhost:8025)
+  * **phpMyAdmin (gerenciador de banco de dados):** Verifique a porta definida em `PHPMYADMIN_PUBLISHED_PORT` no `compose.yaml`.
+
+-----
+
+## 🔧 Comandos Úteis (via Task)
+
+  * `task up`: Inicia os containers em background.
+  * `task down`: Para os containers.
+  * `task restart`: Reinicia os containers.
+  * `task app`: Acessa o terminal (bash) do container `app`.
+  * `task tinker`: Inicia uma sessão do Laravel Tinker.
+  * `task fresh`: Executa `migrate:fresh --seed` para resetar e popular o banco de dados.
+  * `task test`: Roda os testes automatizados do PHPUnit.
