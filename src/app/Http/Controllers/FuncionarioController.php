@@ -315,6 +315,9 @@ class FuncionarioController extends Controller
         $pdf = PDF::loadView('funcionarios.pdf', compact('funcionario'));
         $pdf->setPaper('A4', 'portrait');
 
+
         return $pdf->download('funcionario_' . $funcionario->id . '_' . date('Y-m-d') . '.pdf');
+
+        // return view('funcionarios.pdf', compact('funcionario'));
     }
 }
