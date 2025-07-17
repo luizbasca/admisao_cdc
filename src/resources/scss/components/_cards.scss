@@ -1,0 +1,61 @@
+.section-card {
+    border: none;
+    border-radius: $border-radius;
+    margin-bottom: 1.5rem;
+    transition: $transition;
+    background: $white;
+    overflow: hidden;
+    animation: slideInUp 0.4s ease-out;
+
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    }
+
+    + .section-card {
+        margin-top: 2rem;
+    }
+}
+
+.section-header {
+    color: $dark-gray;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+
+    i {
+        color: $primary-color;
+        font-size: 1.1rem;
+    }
+}
+
+.dependente-card {
+    border: 1.5px solid #e9ecef;
+    border-radius: $border-radius;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background: #fafbfc;
+    transition: $transition;
+    position: relative;
+
+    &:hover {
+        border-color: $primary-light;
+        background: $white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+}
+
+@media (max-width: 768px) {
+    .section-header {
+        padding: 1rem 1.25rem;
+        font-size: 1rem;
+    }
+
+    .dependente-card {
+        padding: 1.25rem;
+    }
+}

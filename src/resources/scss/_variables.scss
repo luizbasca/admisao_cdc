@@ -1,0 +1,28 @@
+// Paleta de Cores Principal
+$primary-color: #c22933;
+$primary-dark: #9a1f28;
+$primary-light: #d64450;
+$secondary-color: #2c3e50;
+$accent-color: #34495e;
+
+// Cores de Feedback
+$success-color: #27ae60;
+$danger-color: #e74c3c;
+$warning-color: #f39c12;
+$info-color: #3498db;
+
+// Tons de Cinza e Branco
+$light-gray: #f8f9fa;
+$medium-gray: #6c757d;
+$dark-gray: #343a40;
+$white: #ffffff;
+
+// Sombras
+$shadow-light: rgba(194, 41, 51, 0.08);
+$shadow-medium: rgba(194, 41, 51, 0.15);
+$shadow-dark: rgba(194, 41, 51, 0.25);
+
+// Bordas e Transições
+$border-radius: 12px;
+$border-radius-sm: 8px;
+$transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

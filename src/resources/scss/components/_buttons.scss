@@ -1,0 +1,49 @@
+.btn-primary {
+    background: $primary-color;
+    border: none;
+    border-radius: $border-radius-sm;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: $transition;
+    font-size: 0.95rem;
+
+    &:hover {
+        background: $primary-dark;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(194, 41, 51, 0.2);
+    }
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, $primary-color 0%, $success-color 100%);
+    border: none;
+    padding: 1rem 2.5rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: $transition;
+    color: $white;
+    letter-spacing: 0.025em;
+    min-width: 200px;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px $shadow-dark;
+        background: linear-gradient(135deg, $primary-dark 0%, #229954 100%);
+    }
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+
+@media (max-width: 768px) {
+    .btn-submit {
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+        width: 100%;
+    }
+}

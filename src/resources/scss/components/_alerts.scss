@@ -1,0 +1,18 @@
+.alert {
+    border-radius: $border-radius;
+    border: none;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.08) 0%, rgba(52, 152, 219, 0.04) 100%);
+    color: #1e3a5f;
+    border-left: 3px solid $info-color;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.08) 0%, rgba(243, 156, 18, 0.04) 100%);
+    color: #7d4e00;
+    border-left: 3px solid $warning-color;
+}
