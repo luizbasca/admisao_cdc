@@ -216,6 +216,10 @@
                         <div class="info-value">{{ $funcionario->data_nascimento->format('d/m/Y') }}</div>
                     </div>
                     <div class="info-row">
+                        <div class="info-label">País Nasc.:</div>
+                        <div class="info-value">{{ $funcionario->pais_nascimento ?? 'Brasil' }}</div>
+                    </div>
+                    <div class="info-row">
                         <div class="info-label">Gênero:</div>
                         <div class="info-value">{{ $funcionario->getGeneroFormatado() }}</div>
                     </div>
@@ -223,12 +227,18 @@
                         <div class="info-label">Estado Civil:</div>
                         <div class="info-value">{{ $funcionario->getEstadoCivilFormatado() }}</div>
                     </div>
-                    @if($funcionario->escolaridade)
+                    <div class="info-row">
+                        <div class="info-label">Raça/Cor:</div>
+                        <div class="info-value">{{ $funcionario->getRacaCorFormatada() }}</div>
+                    </div>
                     <div class="info-row">
                         <div class="info-label">Escolaridade:</div>
                         <div class="info-value">{{ $funcionario->getEscolaridadeFormatada() }}</div>
                     </div>
-                    @endif
+                    <div class="info-row">
+                        <div class="info-label">Deficiência:</div>
+                        <div class="info-value">{{ $funcionario->getDeficienciaFormatada() }}</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -255,6 +265,12 @@
                         <div class="info-value">{{ $funcionario->data_emissao->format('d/m/Y') }}</div>
                     </div>
                     @endif
+                    @if($funcionario->data_validade)
+                    <div class="info-row">
+                        <div class="info-label">Validade:</div>
+                        <div class="info-value">{{ $funcionario->data_validade->format('d/m/Y') }}</div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -272,39 +288,41 @@
     </div>
 
     <!-- Seções menores em linha -->
-    <div class="inline-section">
-        <div class="section">
-            <div class="section-title">SINDICAL</div>
-            <div class="info-grid">
-                <div class="info-row">
-                    <div class="info-label">Você é filiado a algum sindicato?</div>
-                    <div class="info-value">{{ $funcionario->filiado_sindicato ? 'Sim' : 'Não' }}</div>
-                </div>
-                @if($funcionario->filiado_sindicato && $funcionario->nome_sindicato)
-                <div class="info-row">
-                    <div class="info-label">Sindicato:</div>
-                    <div class="info-value">{{ $funcionario->nome_sindicato }}</div>
-                </div>
-                @endif
+    <div class="section">
+        <div class="section-title">SINDICAL</div>
+        <div class="info-grid">
+            <div class="info-row">
+                <div class="info-label">Você é filiado a sindicato?</div>
+                <div class="info-value">{{ $funcionario->filiado_sindicato ? 'Sim' : 'Não' }}</div>
             </div>
+            @if($funcionario->filiado_sindicato && $funcionario->nome_sindicato)
+            <div class="info-row">
+                <div class="info-label">Sindicato:</div>
+                <div class="info-value">{{ $funcionario->nome_sindicato }}</div>
+            </div>
+            @endif
         </div>
     </div>
 
-    <div class="inline-section">
-        <div class="section">
-            <div class="section-title">OUTRA EMPRESA</div>
-            <div class="info-grid">
-                <div class="info-row">
-                    <div class="info-label">Está trabalhando em outra empresa?</div>
-                    <div class="info-value">{{ $funcionario->trabalhando_outra_empresa ? 'Sim' : 'Não' }}</div>
-                </div>
-                @if($funcionario->trabalhando_outra_empresa && $funcionario->nome_outra_empresa)
-                <div class="info-row">
-                    <div class="info-label">Empresa:</div>
-                    <div class="info-value">{{ $funcionario->nome_outra_empresa }}</div>
-                </div>
-                @endif
+    <div class="section">
+        <div class="section-title">OUTRA EMPRESA</div>
+        <div class="info-grid">
+            <div class="info-row">
+                <div class="info-label">Você trabalha em outra empresa?</div>
+                <div class="info-value">{{ $funcionario->trabalhando_outra_empresa ? 'Sim' : 'Não' }}</div>
             </div>
+            @if($funcionario->trabalhando_outra_empresa && $funcionario->nome_outra_empresa)
+            <div class="info-row">
+                <div class="info-label">Empresa:</div>
+                <div class="info-value">{{ $funcionario->nome_outra_empresa }}</div>
+            </div>
+            @endif
+            @if($funcionario->trabalhando_outra_empresa && $funcionario->salario_outra_empresa)
+            <div class="info-row">
+                <div class="info-label">Salário:</div>
+                <div class="info-value">R$ {{ number_format($funcionario->salario_outra_empresa, 2, ',', '.') }}</div>
+            </div>
+            @endif
         </div>
     </div>
 
@@ -315,7 +333,7 @@
         @if($funcionario->possui_dependentes && $funcionario->dependentes->count() > 0)
             <div style="margin-bottom: 8px;">
                 <strong>Possui dependentes?</strong> 
-                <span class="badge success">SIM</span>
+                <span class="badge success">Sim</span>
                 <strong style="margin-left: 15px;">Total:</strong> {{ $funcionario->dependentes->count() }}
             </div>
             
@@ -323,11 +341,18 @@
             <div class="dependente-card">
                 <div class="dependente-title">{{ $index + 1 }}. {{ $dependente->nome_completo }}</div>
                 <strong>Nasc:</strong> {{ $dependente->data_nascimento->format('d/m/Y') }} ({{ $dependente->getIdade() }} anos) | 
-                <strong>Tipo:</strong> {{ $dependente->getTipoDependenciaFormatada() }} | 
-                <strong>IR:</strong> {{ $dependente->getDependenteIrFormatado() }} | 
-                <strong>Sal.Fam:</strong> {{ $dependente->getDependenteSalarioFamiliaFormatado() }}
+                <strong>Tipo:</strong> {{ $dependente->getTipoDependenciaFormatada() }}
                 @if($dependente->cpf)
                 <br><strong>CPF:</strong> {{ $dependente->cpf_formatado }}
+                @endif
+                @if($dependente->dependente_ir)
+                <br><strong>IR:</strong> {{ $dependente->getDependenteIrFormatado() }}
+                @endif
+                @if($dependente->dependente_salario_familia)
+                | <strong>Sal.Fam:</strong> {{ $dependente->getDependenteSalarioFamiliaFormatado() }}
+                @endif
+                @if($dependente->dependente_plano_saude)
+                | <strong>Plano Saúde:</strong> {{ $dependente->getDependentePlanoSaudeFormatado() }}
                 @endif
             </div>
             @endforeach
@@ -335,8 +360,7 @@
             <div class="info-grid">
                 <div class="info-row">
                     <div class="info-label">Possui dependentes?</div>
-                    <div class="info-value">
-                        <span class="badge danger">NÃO</span>
+                    <div class="info-value">Não</span>
                     </div>
                 </div>
             </div>
@@ -352,9 +376,8 @@
                 <div class="column">
                     <div class="info-grid">
                         <div class="info-row">
-                            <div class="info-label">É Estrangeiro:</div>
-                            <div class="info-value">
-                                <span class="badge success">SIM</span>
+                            <div class="info-label">Você é estrangeiro?</div>
+                            <div class="info-value">Sim</span>
                             </div>
                         </div>
                         @if($funcionario->pais_origem)
@@ -394,13 +417,22 @@
             <div class="info-grid">
                 <div class="info-row">
                     <div class="info-label">Você é estrangeiro?</div>
-                    <div class="info-value">
-                        <span class="badge danger">NÃO</span>
+                    <div class="info-value">Não</span>
                     </div>
                 </div>
             </div>
         @endif
     </div>
+
+    <!-- Observações -->
+    @if($funcionario->observacao)
+    <div class="section">
+        <div class="section-title">OBSERVAÇÕES</div>
+        <div class="info-value" style="padding: 8px; border: 1px solid #ddd; background: #f9f9f9;">
+            {{ $funcionario->observacao }}
+        </div>
+    </div>
+    @endif
 
     <!-- LGPD compacto -->
     <div class="section no-break">
@@ -414,21 +446,11 @@
             <div style="margin-top: 10px;">
                 <strong>Status:</strong> 
                 <span class="badge {{ $funcionario->concordancia_lgpd ? 'success' : 'danger' }}">
-                    {{ $funcionario->concordancia_lgpd ? 'CONCORDOU' : 'NÃO CONCORDOU' }}
+                    {{ $funcionario->concordancia_lgpd ? 'CONCORDOU' : 'Não CONCORDOU' }}
                 </span>
             </div>
         </div>
     </div>
-
-    <!-- Observações (se houver) -->
-    @if($funcionario->observacao)
-    <div class="section">
-        <div class="section-title">OBSERVAÇÕES</div>
-        <div class="info-value" style="padding: 8px; border: 1px solid #ddd; background: #f9f9f9;">
-            {{ $funcionario->observacao }}
-        </div>
-    </div>
-    @endif
 
     <!-- Assinatura compacta -->
     <div class="signature-area no-break">
@@ -436,7 +458,7 @@
         <div class="signature-line"></div>
         <p style="font-size: 10px; margin: 0;">
             <strong>{{ $funcionario->nome }}</strong> - CPF: {{ $funcionario->cpf_formatado }}<br>
-            Data: ___/___/____ | Local: ________________
+            Data: ___/___/____ | Local: ____
         </p>
     </div>
 

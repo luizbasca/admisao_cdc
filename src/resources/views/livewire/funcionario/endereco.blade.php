@@ -97,16 +97,3 @@
         </div>
     </div>
 </section>
-
-{{-- Script para melhorar a experiência do usuário --}}
-<script>
-document.addEventListener('livewire:initialized', () => {
-    // Escuta o evento de CEP encontrado
-    Livewire.on('cep-encontrado', () => {
-        // Foca no campo número após preencher o endereço
-        setTimeout(() => {
-            document.querySelector('input[wire\\:model="funcionario.numero"]')?.focus();
-        }, 100);
-    });
-});
-</script>

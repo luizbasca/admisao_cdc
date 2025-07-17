@@ -13,7 +13,7 @@ return new class extends Migration
 
             // Dados Pessoais
             $table->string('nome', 100);
-            $table->string('cpf', 14)->unique();
+            $table->string('cpf', 14);
             $table->date('data_nascimento');
             $table->string('pais_nascimento');
             $table->enum('genero', ['masculino', 'feminino']);
