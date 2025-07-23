@@ -318,6 +318,6 @@ class FuncionarioController extends Controller
 
         return $pdf->download('funcionario_' . $funcionario->id . '_' . date('Y-m-d') . '.pdf');
 
-        // return view('funcionarios.pdf', compact('funcionario'));
+        //return view('funcionarios.pdf', compact('funcionario'));
     }
 }

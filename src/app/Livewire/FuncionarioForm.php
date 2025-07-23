@@ -418,7 +418,6 @@ class FuncionarioForm extends Component
             }
 
             $this->preencherEndereco($data, $cep);
-            session()->flash('success', 'Endereço preenchido automaticamente.');
             $this->dispatch('cep-encontrado');
         } catch (\Exception $e) {
             $this->addError('funcionario.cep', 'Erro ao buscar CEP. Verifique sua conexão com a internet.');
