@@ -1,89 +1,63 @@
 @extends('layouts.app')
 
-@section('title', 'Funcionário: ' . $funcionario->nome_completo)
+@section('title', 'Cadastro Realizado com Sucesso')
 
 @section('content')
-<div class="container-fluid">
-    <!-- Header Section -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3 mb-0">
-                <i class="bi bi-person-fill me-2 text-primary"></i>
-                {{ $funcionario->nome_completo }}
-            </h1>
-            <p class="text-muted mb-0">
-                <i class="bi bi-calendar-plus me-1"></i>
-                Cadastrado em {{ $funcionario->created_at->format('d/m/Y H:i') }}
-            </p>
-        </div>
-        
-        <div class="btn-group" role="group" aria-label="Ações do funcionário">
-            <a href="{{ route('funcionarios.edit', $funcionario) }}" 
-               class="btn btn-warning" 
-               title="Editar funcionário">
-                <i class="bi bi-pencil me-2"></i>Editar
-            </a>
-            <a href="{{ route('funcionarios.pdf', $funcionario) }}" 
-               class="btn btn-success" 
-               title="Gerar PDF do funcionário"
-               target="_blank">
-                <i class="bi bi-file-pdf me-2"></i>Gerar PDF
-            </a>
-            <a href="{{ route('funcionarios.index') }}" 
-               class="btn btn-secondary" 
-               title="Voltar à lista">
-                <i class="bi bi-arrow-left me-2"></i>Voltar
-            </a>
-        </div>
+<div class="container py-4">
+    <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+    
+    <!-- Próximo Passo - Card Principal -->
+    <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4 text-center">
+    <div class="mb-3">
+    <i class="bi bi-check-circle-fill text-success" style="font-size: 2.5rem;"></i>
+    </div>
+    
+    <h2 class="h5 fw-bold mb-3">Próximo Passo!</h2>
+    <p class="text-muted mb-4">
+    Baixe o documento PDF e envie para o responsável da empresa.
+    </p>
+    
+    <a href="{{ route('funcionarios.pdf', $funcionario->id) }}" 
+    class="btn btn-primary btn-lg px-4 mb-3" 
+    target="_blank">
+    <i class="bi bi-download me-2"></i>
+    Baixar o Documento
+    </a>
+    
+    <!-- Aviso sobre exclusão dos dados -->
+    <div class="alert alert-warning mt-3">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    <strong>Aviso de Privacidade:</strong> Em conformidade com a Lei Geral de Proteção de Dados (LGPD), informamos que todos os dados fornecidos serão automaticamente excluídos do sistema após a geração e o download do PDF, garantindo a segurança e a privacidade das informações.
     </div>
 
-    <div class="row g-4">
-        <!-- Dados Pessoais -->
-        <div class="col-12">
-            @include('funcionarios.partials.dados-pessoais', ['funcionario' => $funcionario])
-        </div>
+    
+    </div>
+    </div>
 
-        <!-- Documento de Identificação -->
-        <div class="col-12">
-            @include('funcionarios.partials.documento-identificacao', ['funcionario' => $funcionario])
-        </div>
+    <!-- Status do PDF -->
+    @if($funcionario->pdf_path && file_exists(storage_path('app/public/' . $funcionario->pdf_path)))
+    <div class="alert alert-success text-center mb-4">
+    <i class="bi bi-file-earmark-pdf me-2"></i>
+    <strong>PDF Gerado:</strong> Documento pronto para download
+    <br>
+    <small class="text-muted">
+    Gerado em: {{ \Carbon\Carbon::parse($funcionario->updated_at)->format('d/m/Y H:i') }}
+    </small>
+    </div>
+    @endif
 
-        <!-- Endereço -->
-        <div class="col-12">
-            @include('funcionarios.partials.endereco', ['funcionario' => $funcionario])
-        </div>
+    <!-- Ações Secundárias -->
+    <div class="text-center">
+    <a href="{{ route('funcionarios.create') }}" 
+    class="btn btn-outline-secondary">
+    <i class="bi bi-person-plus me-1"></i>
+    Cadastrar Outro Funcionário
+    </a>
+    </div>
 
-        <!-- Dados de Estrangeiro (condicional) -->
-        @if($funcionario->isEstrangeiro())
-        <div class="col-12">
-            @include('funcionarios.partials.dados-estrangeiro', ['funcionario' => $funcionario])
-        </div>
-        @endif
-
-        <!-- Dependentes -->
-        <div class="col-12">
-            @include('funcionarios.partials.dependentes', ['funcionario' => $funcionario])
-        </div>
+    </div>
     </div>
 </div>
 @endsection
-
-@push('styles')
-<style>
-    .info-item {
-        margin-bottom: 1rem;
-    }
-    .info-item label {
-        font-size: 0.875rem;
-        margin-bottom: 0.25rem;
-        display: block;
-    }
-    .info-item p {
-        font-size: 1rem;
-        line-height: 1.4;
-    }
-    .bg-pink {
-        background-color: #e91e63 !important;
-    }
-</style>
-@endpush

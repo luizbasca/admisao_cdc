@@ -308,25 +308,38 @@ class FuncionarioController extends Controller
         }
     }
 
+
     public function gerarPDF(Funcionario $funcionario)
     {
-        $funcionario->load('dependentes');
+        try {
+            // Verificar se o PDF já foi gerado
+            if ($funcionario->pdf_path && file_exists(storage_path('app/public/' . $funcionario->pdf_path))) {
+                $pdfPath = storage_path('app/public/' . $funcionario->pdf_path);
+                $pdfContent = file_get_contents($pdfPath);
+            } else {
+                // Gerar PDF se não existir
+                $funcionario->load('dependentes');
 
-        $html = view('funcionarios.pdf', compact('funcionario'))->render();
+                $html = view('funcionarios.pdf', compact('funcionario'))->render();
 
-        $pdf = Browsershot::html($html)
-            ->setChromePath('/usr/bin/chromium')
-            ->noSandbox()
-            ->format('A4')
-            ->margins(10, 10, 10, 10)
-            ->waitUntilNetworkIdle()
-            ->printBackground()
-            ->showBackground()
-            ->emulateMedia('print')
-            ->pdf();
+                $pdfContent = Browsershot::html($html)
+                    ->setChromePath('/usr/bin/chromium')
+                    ->noSandbox()
+                    ->format('A4')
+                    ->margins(10, 10, 10, 10)
+                    ->waitUntilNetworkIdle()
+                    ->printBackground()
+                    ->showBackground()
+                    ->emulateMedia('print')
+                    ->pdf();
+            }
 
-        return response($pdf)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'attachment; filename="funcionario_' . $funcionario->id . '_' . date('Y-m-d') . '.pdf"');
+            return response($pdfContent)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename="funcionario_' . $funcionario->id . '_' . date('Y-m-d') . '.pdf"');
+        } catch (\Exception $e) {
+            Log::error('Erro ao gerar/baixar PDF: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Erro ao gerar PDF. Tente novamente.');
+        }
     }
 }

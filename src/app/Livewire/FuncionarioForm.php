@@ -491,6 +491,7 @@ class FuncionarioForm extends Component
         }
     }
 
+
     public function salvar()
     {
         $this->validate();
@@ -507,13 +508,59 @@ class FuncionarioForm extends Component
                 $funcionario = Funcionario::create($dadosFuncionario);
                 $this->salvarDependentes($funcionario);
                 $mensagem = 'Funcionário cadastrado com sucesso!';
+
+                // Gerar PDF automaticamente após o cadastro
+                $this->gerarPDFAutomatico($funcionario);
             }
 
             session()->flash('success', $mensagem);
-            return redirect()->route('funcionarios.index');
+            return redirect()->route('funcionarios.show', $funcionario->id);
         } catch (\Exception $e) {
             Log::error('Erro ao salvar funcionário: ' . $e->getMessage());
             session()->flash('error', 'Erro ao salvar funcionário: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Gera o PDF automaticamente e salva no storage
+     */
+    private function gerarPDFAutomatico($funcionario)
+    {
+        try {
+            $funcionario->load('dependentes');
+
+            $html = view('funcionarios.pdf', compact('funcionario'))->render();
+
+            $pdf = \Spatie\Browsershot\Browsershot::html($html)
+                ->setChromePath('/usr/bin/chromium')
+                ->noSandbox()
+                ->format('A4')
+                ->margins(10, 10, 10, 10)
+                ->waitUntilNetworkIdle()
+                ->printBackground()
+                ->showBackground()
+                ->emulateMedia('print')
+                ->pdf();
+
+            // Criar diretório se não existir
+            $directory = storage_path('app/public/funcionarios');
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true);
+            }
+
+            // Salvar PDF no storage
+            $filename = "funcionario_{$funcionario->id}_" . date('Y-m-d_H-i-s') . ".pdf";
+            $filepath = $directory . '/' . $filename;
+
+            file_put_contents($filepath, $pdf);
+
+            // Salvar caminho do arquivo no banco de dados (opcional)
+            $funcionario->update(['pdf_path' => 'funcionarios/' . $filename]);
+
+            Log::info("PDF gerado automaticamente para funcionário ID: {$funcionario->id}");
+        } catch (\Exception $e) {
+            Log::error("Erro ao gerar PDF automaticamente: " . $e->getMessage());
+            // Não interrompe o fluxo se houver erro na geração do PDF
         }
     }
 
@@ -522,9 +569,29 @@ class FuncionarioForm extends Component
      */
     private function prepararDadosFuncionario(): array
     {
-        return array_filter($this->funcionario, function ($value) {
+        $dados = array_filter($this->funcionario, function ($value) {
             return $value !== '' && $value !== null;
         });
+
+        // Limpar formatação do CPF e CEP
+        if (isset($dados['cpf'])) {
+            $dados['cpf'] = preg_replace('/[^0-9]/', '', $dados['cpf']);
+        }
+
+        if (isset($dados['cep'])) {
+            $dados['cep'] = preg_replace('/[^0-9-]/', '', $dados['cep']);
+        }
+
+        // Garantir valores padrão para campos booleanos
+        $dados['eh_estrangeiro'] = $dados['eh_estrangeiro'] ?? false;
+        $dados['casado_brasileiro'] = $dados['casado_brasileiro'] ?? false;
+        $dados['filhos_brasileiros'] = $dados['filhos_brasileiros'] ?? false;
+        $dados['possui_dependentes'] = $dados['possui_dependentes'] ?? false;
+        $dados['filiado_sindicato'] = $dados['filiado_sindicato'] ?? false;
+        $dados['trabalhando_outra_empresa'] = $dados['trabalhando_outra_empresa'] ?? false;
+        $dados['concordancia_lgpd'] = $dados['concordancia_lgpd'] ?? false;
+
+        return $dados;
     }
 
     /**
@@ -533,6 +600,16 @@ class FuncionarioForm extends Component
     private function salvarDependentes($funcionario)
     {
         foreach ($this->dependentes as $dependente) {
+            // Limpar CPF do dependente se fornecido
+            if (!empty($dependente['cpf'])) {
+                $dependente['cpf'] = preg_replace('/[^0-9]/', '', $dependente['cpf']);
+            }
+
+            // Garantir valores padrão para campos booleanos dos dependentes
+            $dependente['dependente_ir'] = $dependente['dependente_ir'] ?? false;
+            $dependente['dependente_salario_familia'] = $dependente['dependente_salario_familia'] ?? false;
+            $dependente['dependente_plano_saude'] = $dependente['dependente_plano_saude'] ?? false;
+
             $dadosDependente = array_filter($dependente, function ($value) {
                 return $value !== '' && $value !== null;
             });

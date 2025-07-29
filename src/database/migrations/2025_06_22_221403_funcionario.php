@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -63,6 +64,9 @@ return new class extends Migration
 
             // Concordância com a LGPD
             $table->boolean('concordancia_lgpd')->default(false);
+
+            // Caminho do PDF gerado automaticamente
+            $table->string('pdf_path')->nullable();
 
             $table->timestamps();
         });
