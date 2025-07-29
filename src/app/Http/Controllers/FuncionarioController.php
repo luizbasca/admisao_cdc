@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Funcionario;
 use App\Models\Dependente;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Spatie\Browsershot\Browsershot;
 
@@ -321,6 +320,9 @@ class FuncionarioController extends Controller
             ->format('A4')
             ->margins(10, 10, 10, 10)
             ->waitUntilNetworkIdle()
+            ->printBackground()
+            ->showBackground()
+            ->emulateMedia('print')
             ->pdf();
 
         return response($pdf)

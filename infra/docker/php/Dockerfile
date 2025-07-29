@@ -70,12 +70,12 @@ RUN set -eux && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Copia Composer de forma mais eficiente
-COPY --from=composer:2.8.4 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.8.10 /usr/bin/composer /usr/bin/composer
 
 # Copia Node.js
-COPY --from=node:lts-buster-slim /usr/local/bin /usr/local/bin
-COPY --from=node:lts-buster-slim /usr/local/lib /usr/local/lib
-COPY --from=node:lts-buster-slim /opt /opt
+COPY --from=node:lts-slim /usr/local/bin /usr/local/bin
+COPY --from=node:lts-slim /usr/local/lib /usr/local/lib
+COPY --from=node:lts-slim /opt /opt
 
 # Dependências para Puppeteer / Chrome Headless
 RUN apt-get update && \

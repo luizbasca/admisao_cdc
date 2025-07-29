@@ -398,7 +398,6 @@
 			  @endif
         </p>
     </div>
-    
     <div class="signature-area">
       <div class="signature-line"></div>
       <div class="signature-name">{{ $funcionario->nome }}</div>
