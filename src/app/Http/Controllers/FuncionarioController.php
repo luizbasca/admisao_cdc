@@ -7,6 +7,7 @@ use App\Models\Dependente;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
+use Spatie\Browsershot\Browsershot;
 
 class FuncionarioController extends Controller
 {
@@ -312,12 +313,18 @@ class FuncionarioController extends Controller
     {
         $funcionario->load('dependentes');
 
-        $pdf = PDF::loadView('funcionarios.pdf', compact('funcionario'));
-        $pdf->setPaper('A4', 'portrait');
+        $html = view('funcionarios.pdf', compact('funcionario'))->render();
 
+        $pdf = Browsershot::html($html)
+            ->setChromePath('/usr/bin/chromium')
+            ->noSandbox()
+            ->format('A4')
+            ->margins(10, 10, 10, 10)
+            ->waitUntilNetworkIdle()
+            ->pdf();
 
-        return $pdf->download('funcionario_' . $funcionario->id . '_' . date('Y-m-d') . '.pdf');
-
-        //return view('funcionarios.pdf', compact('funcionario'));
+        return response($pdf)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="funcionario_' . $funcionario->id . '_' . date('Y-m-d') . '.pdf"');
     }
 }

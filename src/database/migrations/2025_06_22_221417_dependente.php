@@ -16,6 +16,12 @@ return new class extends Migration
             $table->date('data_nascimento');
             $table->enum('tipo_dependencia', ['filho', 'conjuge', 'pai', 'mae', 'outros']);
             $table->string('outros_dependencia')->nullable();
+
+            // Novos campos para os diferentes tipos de dependência
+            $table->boolean('dependente_ir')->default(false);
+            $table->boolean('dependente_salario_familia')->default(false);
+            $table->boolean('dependente_plano_saude')->default(false);
+
             $table->timestamps();
         });
     }

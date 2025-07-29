@@ -11,7 +11,8 @@ ENV TZ=America/Sao_Paulo \
     LC_ALL=pt_BR.UTF-8 \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME=/composer \
-    DEBIAN_FRONTEND=noninteractive
+    DEBIAN_FRONTEND=noninteractive \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Argumentos para UID e GID
 ARG UID=1000
@@ -47,6 +48,27 @@ RUN set -eux && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# Dependências para Puppeteer / Chrome Headless
+RUN set -eux && \
+    apt-get update && \
+    apt-get -y install --no-install-recommends \
+    libnss3 \
+    libnspr4 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libgbm1 \
+    libpango-1.0-0 \
+    libasound2 \
+    libxss1 \
+    libgtk-3-0 \
+    fonts-liberation && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 # Copia Composer de forma mais eficiente
 COPY --from=composer:2.8.4 /usr/bin/composer /usr/bin/composer
 
@@ -54,6 +76,12 @@ COPY --from=composer:2.8.4 /usr/bin/composer /usr/bin/composer
 COPY --from=node:lts-buster-slim /usr/local/bin /usr/local/bin
 COPY --from=node:lts-buster-slim /usr/local/lib /usr/local/lib
 COPY --from=node:lts-buster-slim /opt /opt
+
+# Dependências para Puppeteer / Chrome Headless
+RUN apt-get update && \
+    apt-get install -y chromium && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Criar grupo e usuário phper, diretórios necessários
 RUN set -eux && \
