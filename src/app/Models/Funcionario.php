@@ -4,12 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Funcionario extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+
+        // Token único para acesso seguro
+        'token',
+
         // Dados Pessoais
         'nome',
         'cpf',
@@ -59,6 +64,9 @@ class Funcionario extends Model
 
         // Observação
         'observacao',
+
+        // PDF Path
+        'pdf_path',
 
         // Concordância com a LGPD
         'concordancia_lgpd',
@@ -223,5 +231,40 @@ class Funcionario extends Model
             return 'R$ ' . number_format($this->salario_outra_empresa, 2, ',', '.');
         }
         return 'Não informado';
+    }
+
+    /**
+     * Gerar token único automaticamente ao criar funcionário
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($funcionario) {
+            if (empty($funcionario->token)) {
+                $funcionario->token = self::generateUniqueToken();
+            }
+        });
+    }
+
+    /**
+     * Gerar token único e seguro
+     */
+    private static function generateUniqueToken()
+    {
+        do {
+            // Gera token de 64 caracteres usando hash SHA256 de string aleatória
+            $token = hash('sha256', Str::random(40) . microtime() . uniqid());
+        } while (self::where('token', $token)->exists());
+
+        return $token;
+    }
+
+    /**
+     * Usar token como chave de rota em vez do ID
+     */
+    public function getRouteKeyName()
+    {
+        return 'token';
     }
 }

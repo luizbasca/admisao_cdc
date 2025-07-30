@@ -14,22 +14,22 @@ Route::prefix('funcionarios')->name('funcionarios.')->group(function () {
     // Rota para salvar funcionário
     Route::post('/', [FuncionarioController::class, 'store'])->name('store');
 
-    // Rota para visualizar funcionário específico
-    Route::get('/{funcionario}', [FuncionarioController::class, 'show'])->name('show');
+    // Rota para visualizar funcionário específico (usando token)
+    Route::get('/{funcionario:token}', [FuncionarioController::class, 'show'])->name('show');
 
-    // Rota para editar funcionário
-    Route::get('/{funcionario}/edit', [FuncionarioController::class, 'edit'])->name('edit');
+    // Rota para editar funcionário (usando token)
+    Route::get('/{funcionario:token}/edit', [FuncionarioController::class, 'edit'])->name('edit');
 
-    // Rota para atualizar funcionário
-    Route::put('/{funcionario}', [FuncionarioController::class, 'update'])->name('update');
+    // Rota para atualizar funcionário (usando token)
+    Route::put('/{funcionario:token}', [FuncionarioController::class, 'update'])->name('update');
 
-    // Rota para deletar funcionário
-    Route::delete('/{funcionario}', [FuncionarioController::class, 'destroy'])->name('destroy');
+    // Rota para deletar funcionário (usando token)
+    Route::delete('/{funcionario:token}', [FuncionarioController::class, 'destroy'])->name('destroy');
 
-    // Rota específica para geração de PDF
-    Route::get('/{funcionario}/pdf', [FuncionarioController::class, 'gerarPDF'])
+    // Rota específica para geração de PDF (usando token)
+    Route::get('/{funcionario:token}/pdf', [FuncionarioController::class, 'gerarPDF'])
         ->name('pdf')
-        ->where('funcionario', '[0-9]+'); // Validação para aceitar apenas números
+        ->where('funcionario', '[a-f0-9]{64}'); // Validação para aceitar apenas hash SHA256
 });
 
 // Rota raiz redirecionando para funcionários

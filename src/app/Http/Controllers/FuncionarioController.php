@@ -141,7 +141,7 @@ class FuncionarioController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Funcionário cadastrado com sucesso!',
-                'redirect' => route('funcionarios.pdf', $funcionario->id)
+                'redirect' => route('funcionarios.pdf', $funcionario->token)
             ]);
         } catch (\Exception $e) {
             DB::rollback();
@@ -285,7 +285,7 @@ class FuncionarioController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Funcionário atualizado com sucesso!',
-                'redirect' => route('funcionarios.show', $funcionario->id)
+                'redirect' => route('funcionarios.show', $funcionario->token)
             ]);
         } catch (\Exception $e) {
             DB::rollback();

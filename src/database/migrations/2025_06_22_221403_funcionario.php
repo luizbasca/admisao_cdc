@@ -12,6 +12,9 @@ return new class extends Migration
         Schema::create('funcionarios', function (Blueprint $table) {
             $table->id();
 
+            // Token único para acesso seguro
+            $table->string('token', 64)->unique()->index();
+
             // Dados Pessoais
             $table->string('nome', 100);
             $table->string('cpf', 14);

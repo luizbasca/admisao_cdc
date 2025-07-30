@@ -514,7 +514,7 @@ class FuncionarioForm extends Component
             }
 
             session()->flash('success', $mensagem);
-            return redirect()->route('funcionarios.show', $funcionario->id);
+            return redirect()->route('funcionarios.show', $funcionario->token);
         } catch (\Exception $e) {
             Log::error('Erro ao salvar funcionário: ' . $e->getMessage());
             session()->flash('error', 'Erro ao salvar funcionário: ' . $e->getMessage());
