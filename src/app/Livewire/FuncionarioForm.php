@@ -529,7 +529,7 @@ class FuncionarioForm extends Component
                 $this->gerarPDFAutomatico($funcionario);
             }
 
-            session()->flash('success', $mensagem);
+            //session()->flash('success', $mensagem);
             return redirect()->route('funcionarios.show', $funcionario->token);
         } catch (\Exception $e) {
             Log::error('Erro ao salvar funcionário: ' . $e->getMessage());
@@ -589,13 +589,17 @@ class FuncionarioForm extends Component
             return $value !== '' && $value !== null;
         });
 
-        // Limpar formatação do CPF e CEP
+        // Limpar formatação do CPF, CEP e CNPJ
         if (isset($dados['cpf'])) {
             $dados['cpf'] = preg_replace('/[^0-9]/', '', $dados['cpf']);
         }
-        
+
         if (isset($dados['cep'])) {
             $dados['cep'] = preg_replace('/[^0-9-]/', '', $dados['cep']);
+        }
+
+        if (isset($dados['cnpj_empresa'])) {
+            $dados['cnpj_empresa'] = preg_replace('/[^0-9]/', '', $dados['cnpj_empresa']);
         }
 
         // Garantir valores padrão para campos booleanos
