@@ -24,6 +24,11 @@ class FuncionarioController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+
+            // Dados da Empresa
+            'nome_empresa' => 'required|string|max:100',
+            'cnpj_empresa' => 'required|cnpj',
+
             // Dados Pessoais - Obrigatórios
             'nome' => 'required|string|max:100',
             'cpf' => 'required|cpf',
@@ -167,6 +172,11 @@ class FuncionarioController extends Controller
     public function update(Request $request, Funcionario $funcionario)
     {
         $validated = $request->validate([
+
+            // Dados da Empresa
+            'nome_empresa' => 'required|string|max:100',
+            'cnpj_empresa' => 'required|cnpj',
+
             // Dados Pessoais - Obrigatórios
             'nome' => 'required|string|max:100',
             'cpf' => 'required|cpf',

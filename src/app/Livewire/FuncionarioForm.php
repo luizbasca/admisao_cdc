@@ -138,6 +138,10 @@ class FuncionarioForm extends Component
     protected function rules()
     {
         $rules = [
+            // Dados da Empresa
+            'funcionario.nome_empresa' => 'required|string|max:100',
+            'funcionario.cnpj_empresa' => ['required', 'cnpj'],
+
             // Dados Pessoais - Obrigatórios
             'funcionario.nome' => 'required|string|max:100',
             'funcionario.cpf' => ['required', 'cpf'],
@@ -197,6 +201,13 @@ class FuncionarioForm extends Component
     }
 
     protected $messages = [
+
+        // Dados da Empresa
+        'funcionario.nome_empresa.required' => 'O nome da empresa é obrigatório.',
+        'funcionario.nome_empresa.max' => 'O nome da empresa deve ter no máximo 100 caracteres.',
+        'funcionario.cnpj_empresa.required' => 'O CNPJ da empresa é obrigatório.',
+        'funcionario.cnpj_empresa.cnpj' => 'O CNPJ deve ser válido.',
+
         // Dados Pessoais
         'funcionario.nome.required' => 'O nome é obrigatório.',
         'funcionario.nome.max' => 'O nome deve ter no máximo 100 caracteres.',
@@ -293,6 +304,11 @@ class FuncionarioForm extends Component
     private function initializeFuncionario()
     {
         $this->funcionario = [
+
+            // Dados da Empresa
+            'nome_empresa' => '',
+            'cnpj_empresa' => '',
+
             // Dados Pessoais
             'nome' => '',
             'cpf' => '',
@@ -577,7 +593,7 @@ class FuncionarioForm extends Component
         if (isset($dados['cpf'])) {
             $dados['cpf'] = preg_replace('/[^0-9]/', '', $dados['cpf']);
         }
-
+        
         if (isset($dados['cep'])) {
             $dados['cep'] = preg_replace('/[^0-9-]/', '', $dados['cep']);
         }

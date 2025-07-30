@@ -15,6 +15,10 @@ class Funcionario extends Model
         // Token único para acesso seguro
         'token',
 
+        // Dados da Empresa - NOVOS CAMPOS
+        'nome_empresa',
+        'cnpj_empresa',
+
         // Dados Pessoais
         'nome',
         'cpf',

@@ -3,6 +3,10 @@
     @include('livewire.partials.messages')
 
     <form wire:submit.prevent="salvar">
+
+        {{-- Dados da Empresa - NOVA SEÇÃO --}}
+        @include('livewire.funcionario.dados-empresa')
+
         {{-- Dados do Funcionário --}}
         @include('livewire.funcionario.dados-pessoais')
 

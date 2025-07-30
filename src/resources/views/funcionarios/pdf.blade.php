@@ -199,6 +199,18 @@
       <div class="header-meta">Emitido pelo Sistema E-Social em: {{ date('d/m/Y H:i:s') }}</div>
     </div>
 
+    <div class="section-title">Dados da Empresa</div>
+    <table class="data-table">
+      <tr>
+        <td class="data-label">Nome da Empresa</td>
+        <td class="data-value">{{ $funcionario->nome_empresa}}</td>
+      </tr>
+      <tr>
+        <td class="data-label">CNPJ da Empresa</td>
+        <td class="data-value">{{ $funcionario->cnpj_empresa}}</td>
+      </tr>
+    </table>
+
     <div class="section-title">Dados Pessoais</div>
     <table class="data-table">
       <tr>
@@ -378,25 +390,25 @@
 
     <div class="section-title">Termo de Consentimento (LGPD)</div>
     <div class="lgpd-section">
-        <p>Pelo presente instrumento, o(a) Titular de dados pessoais declara ciência de que os dados coletados serão utilizados para:</p>
+      <p>Pelo presente instrumento, o(a) Titular de dados pessoais declara ciência de que os dados coletados serão utilizados para:</p>
 
-        <p><strong>Finalidades legais:</strong> elaboração do contrato de trabalho e cumprimento de obrigações legais perante órgãos como Receita Federal, INSS, Caixa Econômica Federal, eSocial, Gov.br, instituições bancárias e demais entidades competentes.</p>
+      <p><strong>Finalidades legais:</strong> elaboração do contrato de trabalho e cumprimento de obrigações legais perante órgãos como Receita Federal, INSS, Caixa Econômica Federal, eSocial, Gov.br, instituições bancárias e demais entidades competentes.</p>
 
-        <p><strong>Compartilhamento:</strong> o Titular consente com o compartilhamento de dados com prestadores de serviços contratados, exclusivamente para cumprimento das finalidades legais.</p>
+      <p><strong>Compartilhamento:</strong> o Titular consente com o compartilhamento de dados com prestadores de serviços contratados, exclusivamente para cumprimento das finalidades legais.</p>
 
-        <p><strong>Proteção:</strong> serão adotadas medidas técnicas e administrativas para proteção dos dados conforme LGPD (Lei nº 13.709/2018).</p>
+      <p><strong>Proteção:</strong> serão adotadas medidas técnicas e administrativas para proteção dos dados conforme LGPD (Lei nº 13.709/2018).</p>
 
-        <p><strong>Prazo:</strong> os dados serão conservados durante o vínculo contratual e por até 2 anos após o encerramento.</p>
+      <p><strong>Prazo:</strong> os dados serão conservados durante o vínculo contratual e por até 2 anos após o encerramento.</p>
 
-        <p><strong>Declaração:</strong> Declaro que li e autorizo o tratamento dos dados nas condições estabelecidas.</p>
+      <p><strong>Declaração:</strong> Declaro que li e autorizo o tratamento dos dados nas condições estabelecidas.</p>
 
-        <p>Status:
-			  @if($funcionario->concordancia_lgpd)
-			  <span class="badge badge-success">CONCEDIDO</span>
-			  @else
-			  <span class="badge badge-danger">NEGADO</span>
-			  @endif
-        </p>
+      <p>Status:
+        @if($funcionario->concordancia_lgpd)
+        <span class="badge badge-success">CONCEDIDO</span>
+        @else
+        <span class="badge badge-danger">NEGADO</span>
+        @endif
+      </p>
     </div>
     <div class="signature-area">
       <div class="signature-line"></div>

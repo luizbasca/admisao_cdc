@@ -15,6 +15,10 @@ return new class extends Migration
             // Token único para acesso seguro
             $table->string('token', 64)->unique()->index();
 
+            // Dados da Empresa
+            $table->string('nome_empresa', 100);
+            $table->string('cnpj_empresa', 18);
+
             // Dados Pessoais
             $table->string('nome', 100);
             $table->string('cpf', 14);
