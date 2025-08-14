@@ -15,6 +15,22 @@ class FuncionarioForm extends Component
     public $maxDependentes = 5;
     public $funcionarioId = null;
 
+    // Propriedades para o sistema de passos
+    public $currentStep = 1;
+    public $totalSteps = 9;
+
+    public $steps = [
+        1 => ['title' => 'Empresa', 'icon' => 'bi-building'],
+        2 => ['title' => 'Dados Pessoais', 'icon' => 'bi-person-fill'],
+        3 => ['title' => 'Documentos', 'icon' => 'bi-card-text'],
+        4 => ['title' => 'Endereço', 'icon' => 'bi-geo-alt-fill'],
+        5 => ['title' => 'Estrangeiro', 'icon' => 'bi-globe'],
+        6 => ['title' => 'Dependentes', 'icon' => 'bi-people-fill'],
+        7 => ['title' => 'Sindicato', 'icon' => 'bi-person-badge'],
+        8 => ['title' => 'Vínculos', 'icon' => 'bi-briefcase-fill'],
+        9 => ['title' => 'Finalização', 'icon' => 'bi-check-circle'],
+    ];
+
     // Constantes para opções de select
     private const ESTADOS_CIVIS = [
         'solteiro' => 'Solteiro',
@@ -687,5 +703,142 @@ class FuncionarioForm extends Component
     {
         return view('livewire.funcionario-form')
             ->layout('layouts.app');
+    }
+
+    // Métodos para navegação entre passos
+    public function nextStep()
+    {
+        // Validar o passo atual antes de avançar
+        $this->validateCurrentStep();
+
+        if ($this->currentStep < $this->totalSteps) {
+            $this->currentStep++;
+            $this->dispatch('step-changed', ['step' => $this->currentStep]);
+        }
+    }
+
+    public function previousStep()
+    {
+        if ($this->currentStep > 1) {
+            $this->currentStep--;
+            $this->dispatch('step-changed', ['step' => $this->currentStep]);
+        }
+    }
+
+    public function goToStep($step)
+    {
+        if ($step >= 1 && $step <= $this->totalSteps) {
+            // Validar passos anteriores se estiver avançando
+            if ($step > $this->currentStep) {
+                for ($i = $this->currentStep; $i < $step; $i++) {
+                    $this->currentStep = $i;
+                    $this->validateCurrentStep();
+                }
+            }
+            $this->currentStep = $step;
+            $this->dispatch('step-changed', ['step' => $this->currentStep]);
+        }
+    }
+
+    private function validateCurrentStep()
+    {
+        switch ($this->currentStep) {
+            case 1: // Dados da Empresa
+                $this->validate([
+                    'funcionario.nome_empresa' => 'required|string|max:100',
+                    'funcionario.cnpj_empresa' => ['required', 'cnpj'],
+                ]);
+                break;
+
+            case 2: // Dados Pessoais
+                $this->validate([
+                    'funcionario.nome' => 'required|string|max:100',
+                    'funcionario.cpf' => ['required', 'cpf'],
+                    'funcionario.data_nascimento' => 'required|date|before:today',
+                    'funcionario.genero' => 'required|in:masculino,feminino',
+                    'funcionario.estado_civil' => 'required',
+                    'funcionario.pais_nascimento' => 'required|string',
+                    'funcionario.raca_cor' => 'required',
+                    'funcionario.escolaridade' => 'required',
+                    'funcionario.deficiencia' => 'required',
+                ]);
+                break;
+
+            case 3: // Documento de Identificação
+                $this->validate([
+                    'funcionario.tipo_documento' => 'required',
+                    'funcionario.numero_documento' => 'required|string|max:50',
+                    'funcionario.orgao_emissor' => 'required|string|max:20',
+                ]);
+                break;
+
+            case 4: // Endereço
+                $this->validate([
+                    'funcionario.cep' => 'required|string|size:9',
+                    'funcionario.rua' => 'required|string|max:100',
+                    'funcionario.numero' => 'required|string|max:10',
+                    'funcionario.bairro' => 'required|string|max:50',
+                    'funcionario.cidade' => 'required|string|max:50',
+                    'funcionario.estado' => 'required|string|size:2',
+                ]);
+                break;
+
+            case 5: // Funcionário Estrangeiro
+                $this->validate([
+                    'funcionario.eh_estrangeiro' => 'required|boolean',
+                    'funcionario.pais_origem' => 'required_if:funcionario.eh_estrangeiro,true|max:50',
+                    'funcionario.tipo_visto' => 'required_if:funcionario.eh_estrangeiro,true|max:50',
+                    'funcionario.data_chegada_brasil' => 'required_if:funcionario.eh_estrangeiro,true|date',
+                    'funcionario.casado_brasileiro' => 'required_if:funcionario.eh_estrangeiro,true|boolean',
+                    'funcionario.filhos_brasileiros' => 'required_if:funcionario.eh_estrangeiro,true|boolean',
+                ]);
+                break;
+
+            case 6: // Dependentes
+                $this->validate([
+                    'funcionario.possui_dependentes' => 'required|boolean',
+                    'dependentes.*.nome_completo' => 'required|string|max:100',
+                    'dependentes.*.cpf' => 'required|cpf',
+                    'dependentes.*.data_nascimento' => 'required|date|before:today',
+                    'dependentes.*.tipo_dependencia' => 'required|string',
+                ]);
+                break;
+
+            case 7: // Sindicato
+                $this->validate([
+                    'funcionario.filiado_sindicato' => 'required|boolean',
+                    'funcionario.nome_sindicato' => 'required_if:funcionario.filiado_sindicato,1|string|max:100',
+                ]);
+                break;
+
+            case 8: // Trabalho em Outra Empresa
+                $this->validate([
+                    'funcionario.trabalhando_outra_empresa' => 'required|boolean',
+                    'funcionario.nome_outra_empresa' => 'required_if:funcionario.trabalhando_outra_empresa,1|string|max:100',
+                    'funcionario.salario_outra_empresa' => 'required_if:funcionario.trabalhando_outra_empresa,1|numeric|min:0',
+                ]);
+                break;
+
+            case 9: // Finalização
+                $this->validate([
+                    'funcionario.concordancia_lgpd' => 'required|accepted',
+                ]);
+                break;
+        }
+    }
+
+    // Método para verificar se um passo está completo
+    public function isStepCompleted($step)
+    {
+        try {
+            $currentStepBackup = $this->currentStep;
+            $this->currentStep = $step;
+            $this->validateCurrentStep();
+            $this->currentStep = $currentStepBackup;
+            return true;
+        } catch (\Exception $e) {
+            $this->currentStep = $currentStepBackup;
+            return false;
+        }
     }
 }

@@ -1,0 +1,48 @@
+// Estilos específicos para páginas de funcionários
+.bg-gradient-primary {
+    background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+}
+
+.icon-wrapper {
+    transition: transform 0.2s ease;
+
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+
+.header-section {
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        z-index: 0;
+    }
+
+    >* {
+        position: relative;
+        z-index: 1;
+    }
+}
+
+// Responsividade para páginas de funcionários
+@media (max-width: 768px) {
+    .header-section {
+        .btn-group {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .icon-wrapper {
+            padding: 2rem !important;
+        }
+    }
+}
