@@ -529,6 +529,7 @@ class FuncionarioForm extends Component
         $this->validate();
 
         try {
+
             $dadosFuncionario = $this->prepararDadosFuncionario();
 
             if ($this->funcionarioId) {

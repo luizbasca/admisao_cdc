@@ -1,4 +1,3 @@
-{{-- resources/views/livewire/partials/messages.blade.php --}}
 @if (session()->has('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
 @endif

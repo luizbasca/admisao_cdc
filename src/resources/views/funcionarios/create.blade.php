@@ -87,13 +87,13 @@
                                     style="width: 11%"
                                     aria-valuenow="1"
                                     aria-valuemin="0"
-                                    aria-valuemax="9">
+                                    aria-valuemax="10">
                                 </div>
                             </div>
                             <div class="step-info text-center mt-2">
                                 <small class="text-white-50" id="step-info">
                                     <i class="bi bi-info-circle me-1"></i>
-                                    Passo <span id="current-step">1</span> de <span id="total-steps">9</span>
+                                    Passo <span id="current-step">1</span> de <span id="total-steps">10</span>
                                     (<span id="progress-percentage">11</span>% concluído)
                                 </small>
                             </div>
@@ -116,7 +116,7 @@
         // Escutar eventos do Livewire para atualizar o progress bar
         Livewire.on('step-changed', (data) => {
             const currentStep = data[0].step;
-            const totalSteps = 9;
+            const totalSteps = 10;
             const percentage = Math.round((currentStep / totalSteps) * 100);
 
             // Atualizar elementos do progress bar
