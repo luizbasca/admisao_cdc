@@ -2,9 +2,6 @@
     {{-- Mensagens de Feedback --}}
     @include('livewire.partials.messages')
 
-    {{-- Barra de Progresso --}}
-    @include('livewire.funcionario.partials.progress-bar')
-
     <form wire:submit.prevent="salvar">
         {{-- Renderizar apenas o passo atual --}}
         @switch($currentStep)

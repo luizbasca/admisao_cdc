@@ -39,19 +39,6 @@ body {
     }
 }
 
-// Indicador de progresso
-.progress-container {
-    border-radius: 8px;
-    padding: 16px;
-    border: 1px solid #e9ecef;
-}
-
-@media (max-width: 768px) {
-    .progress-container {
-        padding: 12px;
-    }
-}
-
 // Texto de ajuda
 .form-text {
     color: $medium-gray;
