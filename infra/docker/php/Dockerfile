@@ -1,4 +1,4 @@
-FROM php:8.3-fpm-bullseye AS base
+FROM php:8.4-fpm-bullseye AS base
 
 WORKDIR /workspace
 
@@ -10,7 +10,8 @@ ENV TZ=America/Sao_Paulo \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME=/composer \
     DEBIAN_FRONTEND=noninteractive \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \
+    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 # Argumentos para UID e GID
 ARG UID=1000
@@ -46,10 +47,11 @@ RUN set -eux && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Dependências para Puppeteer / Chrome Headless
+# Na seção de dependências do Puppeteer/Chrome, adicione mais argumentos:
 RUN set -eux && \
     apt-get update && \
     apt-get -y install --no-install-recommends \
+    chromium \
     libnss3 \
     libnspr4 \
     libatk1.0-0 \
@@ -63,7 +65,19 @@ RUN set -eux && \
     libasound2 \
     libxss1 \
     libgtk-3-0 \
-    fonts-liberation && \
+    fonts-liberation \
+    libdrm2 \
+    libxkbcommon0 \
+    libatspi2.0-0 \
+    # Adicionar estas dependências para resolver o problema do crashpad_handler
+    libxshmfence1 \
+    libgconf-2-4 && \
+    # Criar diretórios necessários com permissões corretas
+    mkdir -p /tmp/chromium-user-data /home/chromium /tmp/.X11-unix && \
+    chmod 1777 /tmp/.X11-unix && \
+    chmod 755 /tmp/chromium-user-data && \
+    # Verificar instalação
+    chromium --version && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -75,18 +89,14 @@ COPY --from=node:lts-slim /usr/local/bin /usr/local/bin
 COPY --from=node:lts-slim /usr/local/lib /usr/local/lib
 COPY --from=node:lts-slim /opt /opt
 
-# Dependências para Puppeteer / Chrome Headless
-RUN apt-get update && \
-    apt-get install -y chromium && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
 # Criar grupo e usuário phper, diretórios necessários
 RUN set -eux && \
     groupadd --gid $GID phper || true && \
     useradd --uid $UID --gid $GID --create-home --shell /bin/bash phper || true && \
     mkdir -p /composer /home/phper/.config/psysh && \
-    chown -R phper:phper /composer /workspace /home/phper/.config/psysh 2>/dev/null || true
+    chown -R phper:phper /composer /workspace /home/phper/.config/psysh 2>/dev/null || true && \
+    # Adiciona o usuário phper ao grupo audio para Chromium
+    usermod -a -G audio phper || true
 
 # Stage de desenvolvimento
 FROM base AS development

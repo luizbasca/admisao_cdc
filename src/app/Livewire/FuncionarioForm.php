@@ -156,11 +156,11 @@ class FuncionarioForm extends Component
         $rules = [
             // Dados da Empresa
             'funcionario.nome_empresa' => 'required|string|max:100',
-            'funcionario.cnpj_empresa' => ['required', 'cnpj'],
+            'funcionario.cnpj_empresa' => 'required|cnpj',
 
             // Dados Pessoais - Obrigatórios
             'funcionario.nome' => 'required|string|max:100',
-            'funcionario.cpf' => ['required', 'cpf'],
+            'funcionario.cpf' => 'required|cpf',
             'funcionario.data_nascimento' => 'required|date|before:today',
             'funcionario.genero' => 'required|in:masculino,feminino',
             'funcionario.estado_civil' => 'required',
@@ -526,7 +526,7 @@ class FuncionarioForm extends Component
 
     public function salvar()
     {
-        $this->validate();
+        //$this->validate();
 
         try {
 
@@ -747,14 +747,14 @@ class FuncionarioForm extends Component
             case 1: // Dados da Empresa
                 $this->validate([
                     'funcionario.nome_empresa' => 'required|string|max:100',
-                    'funcionario.cnpj_empresa' => ['required', 'cnpj'],
+                    'funcionario.cnpj_empresa' => 'required|cnpj',
                 ]);
                 break;
 
             case 2: // Dados Pessoais
                 $this->validate([
                     'funcionario.nome' => 'required|string|max:100',
-                    'funcionario.cpf' => ['required', 'cpf'],
+                    'funcionario.cpf' => 'required|cpf',
                     'funcionario.data_nascimento' => 'required|date|before:today',
                     'funcionario.genero' => 'required|in:masculino,feminino',
                     'funcionario.estado_civil' => 'required',

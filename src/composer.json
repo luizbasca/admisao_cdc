@@ -9,12 +9,12 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "8.3.24",
+        "php": "8.4.11",
         "geekcom/validator-docs": "3.11",
-        "laravel/framework": "12.24.0",
+        "laravel/framework": "12.25.0",
         "laravel/tinker": "2.10.1",
         "livewire/livewire": "3.6",
-        "spatie/browsershot": "5.0"
+        "spatie/browsershot": "5.0.10"
     },
     "require-dev": {
         "fakerphp/faker": "1.24.1",
@@ -23,7 +23,7 @@
         "laravel/sail": "1.44.0",
         "mockery/mockery": "1.6.12",
         "nunomaduro/collision": "8.8.2",
-        "phpunit/phpunit": "12.3.4"
+        "phpunit/phpunit": "12.3.6"
     },
     "autoload": {
         "psr-4": {

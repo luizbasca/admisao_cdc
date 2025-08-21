@@ -6,6 +6,7 @@ use App\Models\Funcionario;
 use App\Models\Dependente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Spatie\Browsershot\Browsershot;
 
 class FuncionarioController extends Controller
@@ -335,6 +336,8 @@ class FuncionarioController extends Controller
                 $pdfContent = Browsershot::html($html)
                     ->setChromePath('/usr/bin/chromium')
                     ->noSandbox()
+                    ->disableSetuidSandbox()
+                    ->disableGpu()
                     ->format('A4')
                     ->margins(10, 10, 10, 10)
                     ->waitUntilNetworkIdle()
